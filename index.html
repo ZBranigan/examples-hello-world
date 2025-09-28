@@ -1,80 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hello, Deno</title>
-  <link rel="preload" href="https://demo-styles.deno.deno.net/fonts/Moranga-Regular.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="https://demo-styles.deno.deno.net/fonts/Moranga-Medium.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="https://demo-styles.deno.deno.net/fonts/Recursive_Variable.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="https://demo-styles.deno.deno.net/styles.css">
-  <style>
-    img {
-      display: inline-block;
-      vertical-align: middle;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockHut // CRYPTO-ANARCHIST APP STORE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        body { font-family: 'Share Tech Mono', monospace; }
+        .glitch {
+            animation: glitch 2s infinite;
+            text-shadow: 
+                0.05em 0 0 #00fffc, 
+                -0.025em -0.05em 0 #fc00ff, 
+                0.025em 0.05em 0 #fffc00;
+        }
+        @keyframes glitch {
+            0%, 100% { text-shadow: 0.05em 0 0 #00fffc, -0.025em -0.05em 0 #fc00ff, 0.025em 0.05em 0 #fffc00; }
+            14% { text-shadow: 0.05em 0 0 #00fffc, -0.025em -0.05em 0 #fc00ff, 0.025em 0.05em 0 #fffc00; }
+            15% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+            49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+            50% { text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
+            99% { text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
+        }
+        .matrix-bg {
+            background: linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .matrix-bg::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="0" y="10" font-size="10" fill="%2300ff00" opacity="0.1">01010101010101010101010101010101010101010101010101010101010101010101010101010101</text></svg>');
+            background-size: 100% 100%;
+            pointer-events: none;
+            animation: matrix 20s linear infinite;
+        }
+        @keyframes matrix {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+        .cyber-border {
+            border: 1px solid #00ff00;
+            box-shadow: 0 0 10px #00ff00, inset 0 0 10px #00ff0020;
+        }
+        .cyber-button {
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            transition: all 0.3s;
+        }
+        .cyber-button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 20px #00ff00;
+        }
+    </style>
 </head>
+<body class="matrix-bg text-green-400">
+    <!-- Navigation -->
+    <nav class="border-b-2 border-green-500 bg-black bg-opacity-90 backdrop-blur">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-skull text-3xl text-green-400 glitch"></i>
+                    <h1 class="text-2xl font-bold glitch">BlockHut</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-xs text-green-300">//NODE: 0xA4F2...DEAD</span>
+                    <button class="cyber-button px-4 py-2 rounded-none">
+                        <i class="fas fa-plug mr-2"></i>CONNECT WALLET
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<body>
-    <main>
-      <section>
-        <a href="https://deno.com/deploy">
-        </a>
-      <h1>
-        <p>
-          Hello, Deno!
-        </p>
-      </h1>
-      <p>
-        This little example is being served by <a href="https://deno.com/">Deno</a>.
-        You can run it locally or in porduction on <a href="https://deno.com/deploy">Deno Deploy</a> or other hosting platforms.
-      </p>
-      <ul>
-        <li>Run it locally with<code>deno task dev</code></li>
-        <li>Deploy it to <a href="https://deno.com/deploy">Deno Deploy</a> via the CLI by running<code>deno deploy</code></li>
-        <li>Run it locally and share it publically by running <code>deno deploy --connected</code></li>
-      </ul>
+    <!-- Hero Section -->
+    <section class="container mx-auto px-4 py-12 text-center border-b-2 border-green-500">
+        <h2 class="text-6xl font-bold mb-4 glitch">// CRYPTO-ANARCHIST APP STORE //</h2>
+        <p class="text-xl mb-8 text-green-300">NO KYC • NO GOVERNANCE • NO MERCY</p>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="cyber-border p-6 bg-black bg-opacity-50">
+                <i class="fas fa-network-wired text-4xl text-green-400 mb-3"></i>
+                <h3 class="text-3xl font-bold">∞</h3>
+                <p class="text-green-600">UNCENSORED NODES</p>
+            </div>
+            <div class="cyber-border p-6 bg-black bg-opacity-50">
+                <i class="fas fa-fire text-4xl text-red-500 mb-3"></i>
+                <h3 class="text-3xl font-bold">0.0001%</h3>
+                <p class="text-green-600">FEE (BURN IT ALL)</p>
+            </div>
+            <div class="cyber-border p-6 bg-black bg-opacity-50">
+                <i class="fas fa-mask text-4xl text-yellow-500 mb-3"></i>
+                <h3 class="text-3xl font-bold">100%</h3>
+                <p class="text-green-600">PSEUDONYMOUS</p>
+            </div>
+        </div>
     </section>
-      <hr>
-    <section>
-      <h2>What's next?</h2>
-      <p>
-        You can clone this example and deploy it to Deno Deploy in just a few clicks
-        <a href="https://app.deno.com/new?clone=https://github.com/denoland/examples&path=hello-world"><img src="https://deno.com/button" alt="Deploy on Deno"/></a>
-      </p>
-      <ul>
-        <li>
-          <a href="https://docs.deno.com/examples">More examples in the Deno Docs</a>
-        </li>
-        <li>
-          <a href="https://deno.com/deploy">Deno Deploy Early Access</a>
-        </li>
-      </ul>
+
+    <!-- Featured Apps -->
+    <section class="container mx-auto px-4 py-8">
+        <h3 class="text-3xl font-bold mb-6 glitch">// BLACK MARKET APPS //</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- App Card -->
+            <div class="cyber-border p-4 bg-black bg-opacity-70 hover:bg-green-900 hover:bg-opacity-20 transition cursor-pointer">
+                <div class="w-full h-40 bg-gray-900 mb-3 flex items-center justify-center border border-green-500">
+                    <i class="fas fa-bomb text-6xl text-red-500"></i>
+                </div>
+                <h4 class="font-bold mb-1 text-red-400">DarkPoolSwap</h4>
+                <p class="text-green-600 text-sm mb-2">Unregulated DEX</p>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-yellow-400">⚡ ANON</span>
+                    <div class="flex items-center">
+                        <i class="fas fa-skull text-red-400 mr-1"></i>
+                        <span>9.9</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- App Card -->
+            <div class="cyber-border p-4 bg-black bg-opacity-70 hover:bg-green-900 hover:bg-opacity-20 transition cursor-pointer">
+                <div class="w-full h-40 bg-gray-900 mb-3 flex items-center justify-center border border-green-500">
+                    <i class="fas fa-user-secret text-6xl text-purple-500"></i>
+                </div>
+                <h4 class="font-bold mb-1 text-purple-400">GhostVPN</h4>
+                <p class="text-green-600 text-sm mb-2">Triple-hop tor</p>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-yellow-400">⚡ ANON</span>
+                    <div class="flex items-center">
+                        <i class="fas fa-skull text-red-400 mr-1"></i>
+                        <span>9.8</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- App Card -->
+            <div class="cyber-border p-4 bg-black bg-opacity-70 hover:bg-green-900 hover:bg-opacity-20 transition cursor-pointer">
+                <div class="w-full h-40 bg-gray-900 mb-3 flex items-center justify-center border border-green-500">
+                    <i class="fas fa-coins text-6xl text-yellow-500"></i>
+                </div>
+                <h4 class="font-bold mb-1 text-yellow-400">MixerPro</h4>
+                <p class="text-green-600 text-sm mb-2">Privacy mixer</p>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-yellow-400">⚡ ANON</span>
+                    <div class="flex items-center">
+                        <i class="fas fa-skull text-red-400 mr-1"></i>
+                        <span>10.0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- App Card -->
+            <div class="cyber-border p-4 bg-black bg-opacity-70 hover:bg-green-900 hover:bg-opacity-20 transition cursor-pointer">
+                <div class="w-full h-40 bg-gray-900 mb-3 flex items-center justify-center border border-green-500">
+                    <i class="fas fa-file-contract text-6xl text-cyan-500"></i>
+                </div>
+                <h4 class="font-bold mb-1 text-cyan-400">AssassinDAO</h4>
+                <p class="text-green-600 text-sm mb-2">Smart contracts</p>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-yellow-400">⚡ ANON</span>
+                    <div class="flex items-center">
+                        <i class="fas fa-skull text-red-400 mr-1"></i>
+                        <span>9.7</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
-    </main>
-    <hr>
-    <footer>
-      <section>
-      <ul class="flex-btwn">
-        <li>
-          <a href="https://deno.com">BlueSky</a>
-        </li>
-        <li>
-          <a href="https://deno.com">Twitter</a>
-        </li>
-        <li>
-          <a href="https://deno.com">YouTube</a>
-        </li>
-        <li>
-          <a href="https://deno.com">Newsletter</a>
-        </li>
-        <li>
-          <a href="https://deno.com">Deno</a>
-        </li>
-      </ul>
-      </section>
+
+    <!-- Payment Gateway Demo -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="cyber-border bg-black bg-opacity-90 p-8">
+            <h3 class="text-3xl font-bold mb-6 glitch">// SYSTEM ANARCHY //</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="text-xl font-bold mb-3 text-red-400">// CORPORATE CHAINS //</h4>
+                    <ul class="space-y-2 text-red-600">
+                        <li><i class="fas fa-times mr-2"></i>30% TAX TO THE MAN</li>
+                        <li><i class="fas fa-times mr-2"></i>SURVEILLANCE CAPITALISM</li>
+                        <li><i class="fas fa-times mr-2"></i>KYC/AML SLAVERY</li>
+                        <li><i class="fas fa-times mr-2"></i>CENTRALIZED BACKDOORS</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-3 text-green-400">// OUR CHAOS //</h4>
+                    <ul class="space-y-2 text-green-400">
+                        <li><i class="fas fa-check mr-2"></i>0.0001% BURN RATE</li>
+                        <li><i class="fas fa-check mr-2"></i>COMPLETE DARKNESS</li>
+                        <li><i class="fas fa-check mr-2"></i>NO MASTERS</li>
+                        <li><i class="fas fa-check mr-2"></i>IMMORTAL SMART CONTRACTS</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t-2 border-green-500 mt-16 py-8 bg-black">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-green-600 mb-2">// NO GOVERNMENT • NO BORDERS • NO RULERS //</p>
+            <p class="text-xs text-green-800">DEPLOYED ON: IPFS • ARWEAVE • STORJ • SIA</p>
+        </div>
     </footer>
 </body>
 </html>
