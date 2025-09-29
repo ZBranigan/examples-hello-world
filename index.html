@@ -1,288 +1,283 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BlockHut // DECENTRALIZED APP STORE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        body { 
-            font-family: 'Share Tech Mono', monospace;
-            -webkit-font-smoothing: antialiased;
-            -webkit-tap-highlight-color: transparent;
-            background: #000;
-        }
-        .glitch {
-            animation: glitch 3s infinite;
-            text-shadow: 
-                0.03em 0 0 #00fffc, 
-                -0.015em -0.03em 0 #fc00ff, 
-                0.015em 0.03em 0 #fffc00;
-        }
-        @keyframes glitch {
-            0%, 100% { text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; }
-            15% { text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; }
-            16% { text-shadow: -0.03em -0.015em 0 #00fffc, 0.015em 0.015em 0 #fc00ff, -0.03em -0.03em 0 #fffc00; }
-        }
-        .cyber-border {
-            border: 1px solid #00ff00;
-            box-shadow: 0 0 8px #00ff00, inset 0 0 8px #00ff0020;
-        }
-        .cyber-button {
-            background: #000;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            text-shadow: 0 0 4px #00ff00;
-            transition: all 0.2s;
-            touch-action: manipulation;
-        }
-        .cyber-button:active {
-            background: #00ff00;
-            color: #000;
-            transform: scale(0.95);
-        }
-        .app-card {
-            touch-action: manipulation;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-        }
-        .decentralized-indicator {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BlockHut // DaisyUI Decentralized Store</title>
+
+  <!-- Tailwind 4 + DaisyUI 5 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.1.23/dist/daisyui.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* Monospace font for cyber feel */
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    body { font-family: 'Share Tech Mono', monospace; }
+
+    /* Glitch effect */
+    .glitch {
+      animation: glitch 3s infinite;
+      text-shadow:
+        0.03em 0 0 #00fffc,
+        -0.015em -0.03em 0 #fc00ff,
+        0.015em 0.03em 0 #fffc00;
+    }
+    @keyframes glitch {
+      0%, 100% { text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; }
+      15% { text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; }
+      16% { text-shadow: -0.03em -0.015em 0 #00fffc, 0.015em 0.015em 0 #fc00ff, -0.03em -0.03em 0 #fffc00; }
+    }
+
+    /* Network status pulse */
+    .decentralized-indicator {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
 </head>
-<body class="text-green-400 min-h-screen overflow-x-hidden">
-    <!-- Fixed Header with Decentralized Status -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-black border-b-2 border-green-500">
-        <div class="px-4 py-3">
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center space-x-2">
-                    <div class="decentralized-indicator">
-                        <i class="fas fa-network-wired text-green-400 text-lg"></i>
-                    </div>
-                    <h1 class="text-lg font-bold glitch">BlockHut DAPP store</h1>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <div class="w-2 h-2 bg-green-400 rounded-full decentralized-indicator"></div>
-                    <span class="text-xs">1142 PEERS</span>
-                </div>
-            </div>
-            
-            <!-- Network Status Bar -->
-            <div class="flex items-center justify-between text-xs">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-circle text-green-400 text-xs"></i>
-                    <span>IPFS: CONNECTED</span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-circle text-green-400 text-xs"></i>
-                    <span>ARWEAVE: SYNCED</span>
-                </div>
-            </div>
+
+<body class="bg-base-100 text-base-content min-h-screen overflow-x-hidden">
+
+  <!-- ===== FIXED HEADER ===== -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-base-200/90 backdrop-blur border-b border-primary">
+    <div class="px-4 py-3 flex items-center justify-between">
+      <!-- Left: Logo + network -->
+      <div class="flex items-center space-x-3">
+        <div class="decentralized-indicator">
+          <i class="fa-solid fa-skull text-primary text-xl"></i>
         </div>
-    </header>
+        <h1 class="text-lg font-bold glitch">BlockHut</h1>
+      </div>
 
-    <!-- Main Content -->
-    <main class="pt-32 pb-20">
-        <!-- Decentralized Search & Filter -->
-        <section class="px-4 mb-6">
-            <div class="flex space-x-2 mb-3">
-                <input type="text" 
-                       placeholder="Search decentralized apps..." 
-                       class="flex-1 bg-black cyber-border px-3 py-2 text-sm focus:outline-none focus:border-green-400">
-                <button class="cyber-button px-3 py-2 text-sm">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-            
-            <!-- Category Filters -->
-            <div class="flex space-x-2 overflow-x-auto pb-2">
-                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap">ALL DAPPS</button>
-                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap bg-green-900">DEFI</button>
-                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap">NFT</button>
-                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap">DAO</button>
-                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap">PRIVACY</button>
-            </div>
-        </section>
-
-        <!-- Featured Decentralized Apps -->
-        <section class="px-4 mb-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold glitch">// DECENTRALIZED APPS //</h3>
-                <button class="text-xs cyber-button px-2 py-1">VIEW ALL</button>
-            </div>
-            
-            <!-- App List -->
-            <div class="space-y-3">
-                <!-- DApp Card 1 -->
-                <div class="app-card cyber-border p-3 bg-black bg-opacity-70 flex items-center">
-                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center border border-green-500 mr-3">
-                        <i class="fas fa-coins text-xl text-yellow-500"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="font-bold text-sm text-yellow-400">Uniswap DEX</h4>
-                        <p class="text-green-600 text-xs">Decentralized Exchange</p>
-                        <div class="flex items-center mt-1">
-                            <div class="flex items-center mr-3">
-                                <i class="fas fa-users text-green-400 text-xs mr-1"></i>
-                                <span class="text-xs">45.2K</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
-                                <span class="text-xs">4.9</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="cyber-button px-3 py-1 text-xs">OPEN</button>
-                </div>
-
-                <!-- DApp Card 2 -->
-                <div class="app-card cyber-border p-3 bg-black bg-opacity-70 flex items-center">
-                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center border border-green-500 mr-3">
-                        <i class="fas fa-image text-xl text-purple-500"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="font-bold text-sm text-purple-400">OpenSea</h4>
-                        <p class="text-green-600 text-xs">NFT Marketplace</p>
-                        <div class="flex items-center mt-1">
-                            <div class="flex items-center mr-3">
-                                <i class="fas fa-users text-green-400 text-xs mr-1"></i>
-                                <span class="text-xs">28.7K</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
-                                <span class="text-xs">4.7</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="cyber-button px-3 py-1 text-xs">OPEN</button>
-                </div>
-
-                <!-- DApp Card 3 -->
-                <div class="app-card cyber-border p-3 bg-black bg-opacity-70 flex items-center">
-                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center border border-green-500 mr-3">
-                        <i class="fas fa-vote-yea text-xl text-blue-500"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="font-bold text-sm text-blue-400">MakerDAO</h4>
-                        <p class="text-green-600 text-xs">Decentralized Governance</p>
-                        <div class="flex items-center mt-1">
-                            <div class="flex items-center mr-3">
-                                <i class="fas fa-users text-green-400 text-xs mr-1"></i>
-                                <span class="text-xs">15.3K</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
-                                <span class="text-xs">4.8</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="cyber-button px-3 py-1 text-xs">OPEN</button>
-                </div>
-
-                <!-- DApp Card 4 -->
-                <div class="app-card cyber-border p-3 bg-black bg-opacity-70 flex items-center">
-                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center border border-green-500 mr-3">
-                        <i class="fas fa-lock text-xl text-red-500"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="font-bold text-sm text-red-400">Tornado Cash</h4>
-                        <p class="text-green-600 text-xs">Privacy Protocol</p>
-                        <div class="flex items-center mt-1">
-                            <div class="flex items-center mr-3">
-                                <i class="fas fa-users text-green-400 text-xs mr-1"></i>
-                                <span class="text-xs">8.9K</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
-                                <span class="text-xs">4.6</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="cyber-button px-3 py-1 text-xs">OPEN</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Decentralized Stats -->
-        <section class="px-4 mb-6">
-            <div class="cyber-border p-4 bg-black bg-opacity-90">
-                <h4 class="text-md font-bold mb-3 text-center glitch">// DECENTRALIZATION METRICS //</h4>
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div class="text-center">
-                        <div class="text-xl font-bold text-green-400">1,142</div>
-                        <div class="text-xs text-green-600">ACTIVE PEERS</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-xl font-bold text-yellow-400">847</div>
-                        <div class="text-xs text-green-600">DAPPS HOSTED</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-xl font-bold text-blue-400">0.001%</div>
-                        <div class="text-xs text-green-600">NETWORK FEE</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-xl font-bold text-purple-400">100%</div>
-                        <div class="text-xs text-green-600">UPTIME</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- IPFS/Filecoin Integration -->
-        <section class="px-4 mb-6">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-lg font-bold glitch">// IPFS HOSTED //</h3>
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-circle text-green-400 text-xs"></i>
-                    <span class="text-xs">ONLINE</span>
-                </div>
-            </div>
-            
-            <div class="space-y-2">
-                <div class="flex items-center justify-between cyber-border p-2 bg-black bg-opacity-70">
-                    <div class="flex items-center">
-                        <i class="fas fa-cube text-green-400 mr-2"></i>
-                        <span class="text-sm">IPFS: QmXyZ...7aBc</span>
-                    </div>
-                    <span class="text-xs text-green-400">PINNED</span>
-                </div>
-                <div class="flex items-center justify-between cyber-border p-2 bg-black bg-opacity-70">
-                    <div class="flex items-center">
-                        <i class="fas fa-database text-blue-400 mr-2"></i>
-                        <span class="text-sm">ARWEAVE: yX9...kL2</span>
-                    </div>
-                    <span class="text-xs text-green-400">STORED</span>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Mobile Bottom Navigation - DApp Store Focus -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-green-500">
-        <div class="grid grid-cols-5 gap-0">
-            <button class="cyber-button py-3 text-xs border-r border-green-500 bg-green-900">
-                <i class="fas fa-store block mb-1 text-lg"></i>DAPPS
-            </button>
-            <button class="cyber-button py-3 text-xs border-r border-green-500">
-                <i class="fas fa-search block mb-1 text-lg"></i>FIND
-            </button>
-            <button class="cyber-button py-3 text-xs border-r border-green-500">
-                <i class="fas fa-plus-circle block mb-1 text-lg"></i>UPLOAD
-            </button>
-            <button class="cyber-button py-3 text-xs border-r border-green-500">
-                <i class="fas fa-wallet block mb-1 text-lg"></i>WALLET
-            </button>
-            <button class="cyber-button py-3 text-xs">
-                <i class="fas fa-cog block mb-1 text-lg"></i>NODE
-            </button>
+      <!-- Right: Theme selector + peers -->
+      <div class="flex items-center space-x-3">
+        <span class="text-xs hidden sm:inline">1142 PEERS</span>
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-circle btn-ghost btn-xs">
+            <i class="fa-solid fa-palette text-primary"></i>
+          </label>
+          <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-40">
+            <li><button data-set-theme="light" class="btn btn-ghost btn-sm justify-start">🌕 Light</button></li>
+            <li><button data-set-theme="dark" class="btn btn-ghost btn-sm justify-start">🌑 Dark</button></li>
+            <li><button data-set-theme="cyberpunk" class="btn btn-ghost btn-sm justify-start">🌈 Cyberpunk</button></li>
+            <li><button data-set-theme="synthwave" class="btn btn-ghost btn-sm justify-start">🌆 Synthwave</button></li>
+          </ul>
         </div>
-    </nav>
+      </div>
+    </div>
+
+    <!-- Network bar -->
+    <div class="px-4 pb-2 flex items-center justify-between text-xs">
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-circle text-success text-xs"></i>
+        <span>IPFS: CONNECTED</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-circle text-success text-xs"></i>
+        <span>ARWEAVE: SYNCED</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="pt-28 pb-24 px-4">
+
+    <!-- Search + Categories -->
+    <section class="mb-6">
+      <div class="flex space-x-2 mb-3">
+        <input type="text" placeholder="Search decentralized apps..." class="input input-bordered input-sm w-full">
+        <button class="btn btn-primary btn-sm"><i class="fa-solid fa-search"></i></button>
+      </div>
+      <div class="flex space-x-2 overflow-x-auto pb-2">
+        <button class="btn btn-outline btn-xs btn-primary">ALL DAPPS</button>
+        <button class="btn btn-outline btn-xs">DeFi</button>
+        <button class="btn btn-outline btn-xs">NFT</button>
+        <button class="btn btn-outline btn-xs">DAO</button>
+        <button class="btn btn-outline btn-xs">Privacy</button>
+      </div>
+    </section>
+
+    <!-- Decentralized Apps List -->
+    <section class="mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold glitch">// DECENTRALIZED APPS //</h2>
+        <button class="btn btn-outline btn-xs">View All</button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- DApp Card -->
+        <div class="card card-bordered border-primary bg-base-200 shadow-md">
+          <figure class="px-4 pt-4">
+            <div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-coins text-3xl text-warning"></i>
+            </div>
+          </figure>
+          <div class="card-body items-center text-center py-4">
+            <h3 class="card-title text-sm">Uniswap DEX</h3>
+            <p class="text-xs text-base-content/70">Decentralized Exchange</p>
+            <div class="flex items-center space-x-3 text-xs mt-2">
+              <span><i class="fa-solid fa-users text-success mr-1"></i>45.2K</span>
+              <span><i class="fa-solid fa-star text-warning mr-1"></i>4.9</span>
+            </div>
+            <div class="card-actions mt-3">
+              <button class="btn btn-primary btn-sm">Open DApp</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DApp Card -->
+        <div class="card card-bordered border-primary bg-base-200 shadow-md">
+          <figure class="px-4 pt-4">
+            <div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-image text-3xl text-secondary"></i>
+            </div>
+          </figure>
+          <div class="card-body items-center text-center py-4">
+            <h3 class="card-title text-sm">OpenSea</h3>
+            <p class="text-xs text-base-content/70">NFT Marketplace</p>
+            <div class="flex items-center space-x-3 text-xs mt-2">
+              <span><i class="fa-solid fa-users text-success mr-1"></i>28.7K</span>
+              <span><i class="fa-solid fa-star text-warning mr-1"></i>4.7</span>
+            </div>
+            <div class="card-actions mt-3">
+              <button class="btn btn-primary btn-sm">Open DApp</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DApp Card -->
+        <div class="card card-bordered border-primary bg-base-200 shadow-md">
+          <figure class="px-4 pt-4">
+            <div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-vote-yea text-3xl text-info"></i>
+            </div>
+          </figure>
+          <div class="card-body items-center text-center py-4">
+            <h3 class="card-title text-sm">MakerDAO</h3>
+            <p class="text-xs text-base-content/70">Decentralized Governance</p>
+            <div class="flex items-center space-x-3 text-xs mt-2">
+              <span><i class="fa-solid fa-users text-success mr-1"></i>15.3K</span>
+              <span><i class="fa-solid fa-star text-warning mr-1"></i>4.8</span>
+            </div>
+            <div class="card-actions mt-3">
+              <button class="btn btn-primary btn-sm">Open DApp</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DApp Card -->
+        <div class="card card-bordered border-primary bg-base-200 shadow-md">
+          <figure class="px-4 pt-4">
+            <div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-lock text-3xl text-error"></i>
+            </div>
+          </figure>
+          <div class="card-body items-center text-center py-4">
+            <h3 class="card-title text-sm">Tornado Cash</h3>
+            <p class="text-xs text-base-content/70">Privacy Protocol</p>
+            <div class="flex items-center space-x-3 text-xs mt-2">
+              <span><i class="fa-solid fa-users text-success mr-1"></i>8.9K</span>
+              <span><i class="fa-solid fa-star text-warning mr-1"></i>4.6</span>
+            </div>
+            <div class="card-actions mt-3">
+              <button class="btn btn-primary btn-sm">Open DApp</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Decentralization Metrics -->
+    <section class="mb-6">
+      <div class="card card-bordered border-primary bg-base-200">
+        <div class="card-body">
+          <h3 class="card-title text-sm justify-center glitch">// DECENTRALIZATION METRICS //</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mt-4">
+            <div>
+              <div class="text-xl font-bold text-success">1,142</div>
+              <div class="text-xs text-base-content/70">PEERS</div>
+            </div>
+            <div>
+              <div class="text-xl font-bold text-warning">847</div>
+              <div class="text-xs text-base-content/70">DAPPS</div>
+            </div>
+            <div>
+              <div class="text-xl font-bold text-info">0.001%</div>
+              <div class="text-xs text-base-content/70">FEE</div>
+            </div>
+            <div>
+              <div class="text-xl font-bold text-secondary">100%</div>
+              <div class="text-xs text-base-content/70">UPTIME</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IPFS Status -->
+    <section>
+      <div class="card card-bordered border-primary bg-base-200">
+        <div class="card-body">
+          <h3 class="card-title text-sm justify-center glitch">// IPFS HOSTING //</h3>
+          <div class="space-y-2 mt-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-cube text-success"></i>
+                <span class="text-xs font-mono">QmXyZ...7aBc</span>
+              </div>
+              <span class="badge badge-success badge-sm">PINNED</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-database text-info"></i>
+                <span class="text-xs font-mono">yX9...kL2</span>
+              </div>
+              <span class="badge badge-info badge-sm">STORED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== BOTTOM NAV ===== -->
+  <footer class="fixed bottom-0 left-0 right-0 bg-base-200/90 backdrop-blur border-t border-primary">
+    <div class="grid grid-cols-5 gap-0 text-center text-xs">
+      <button class="btn btn-ghost btn-xs rounded-none">
+        <i class="fa-solid fa-store block mb-1 text-lg"></i>DApps
+      </button>
+      <button class="btn btn-ghost btn-xs rounded-none">
+        <i class="fa-solid fa-search block mb-1 text-lg"></i>Find
+      </button>
+      <button class="btn btn-ghost btn-xs rounded-none">
+        <i class="fa-solid fa-plus-circle block mb-1 text-lg"></i>Upload
+      </button>
+      <button class="btn btn-ghost btn-xs rounded-none">
+        <i class="fa-solid fa-wallet block mb-1 text-lg"></i>Wallet
+      </button>
+      <button class="btn btn-ghost btn-xs rounded-none">
+        <i class="fa-solid fa-cog block mb-1 text-lg"></i>Node
+      </button>
+    </div>
+  </footer>
+
+  <!-- ===== THEME SWITCHER LOGIC ===== -->
+  <script>
+    // DaisyUI theme switcher
+    document.querySelectorAll('[data-set-theme]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.setTheme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      });
+    });
+    // Load saved theme
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+  </script>
 </body>
 </html>
