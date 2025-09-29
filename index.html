@@ -2,212 +2,287 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockHut // CRYPTO-ANARCHIST APP STORE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BlockHut // DECENTRALIZED APP STORE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        body { font-family: 'Share Tech Mono', monospace; }
+        body { 
+            font-family: 'Share Tech Mono', monospace;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            background: #000;
+        }
         .glitch {
-            animation: glitch 2s infinite;
+            animation: glitch 3s infinite;
             text-shadow: 
-                0.05em 0 0 #00fffc, 
-                -0.025em -0.05em 0 #fc00ff, 
-                0.025em 0.05em 0 #fffc00;
+                0.03em 0 0 #00fffc, 
+                -0.015em -0.03em 0 #fc00ff, 
+                0.015em 0.03em 0 #fffc00;
         }
         @keyframes glitch {
-            0%, 100% { text-shadow: 0.05em 0 0 #00fffc, -0.025em -0.05em 0 #fc00ff, 0.025em 0.05em 0 #fffc00; }
-            14% { text-shadow: 0.05em 0 0 #00fffc, -0.025em -0.05em 0 #fc00ff, 0.025em 0.05em 0 #fffc00; }
-            15% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
-            49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
-            50% { text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
-            99% { text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
-        }
-        .matrix-bg {
-            background: linear-gradient(180deg, #000 0%, #0a0a0a 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        .matrix-bg::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="0" y="10" font-size="10" fill="%2300ff00" opacity="0.1">01010101010101010101010101010101010101010101010101010101010101010101010101010101</text></svg>');
-            background-size: 100% 100%;
-            pointer-events: none;
-            animation: matrix 20s linear infinite;
-        }
-        @keyframes matrix {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100px); }
+            0%, 100% { text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; }
+            15% { text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; }
+            16% { text-shadow: -0.03em -0.015em 0 #00fffc, 0.015em 0.015em 0 #fc00ff, -0.03em -0.03em 0 #fffc00; }
         }
         .cyber-border {
             border: 1px solid #00ff00;
-            box-shadow: 0 0 10px #00ff00, inset 0 0 10px #00ff0020;
+            box-shadow: 0 0 8px #00ff00, inset 0 0 8px #00ff0020;
         }
         .cyber-button {
             background: #000;
             border: 2px solid #00ff00;
             color: #00ff00;
-            text-shadow: 0 0 5px #00ff00;
-            transition: all 0.3s;
+            text-shadow: 0 0 4px #00ff00;
+            transition: all 0.2s;
+            touch-action: manipulation;
         }
-        .cyber-button:hover {
+        .cyber-button:active {
             background: #00ff00;
             color: #000;
-            box-shadow: 0 0 20px #00ff00;
+            transform: scale(0.95);
+        }
+        .app-card {
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+        }
+        .decentralized-indicator {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
     </style>
 </head>
-<body class="matrix-bg text-green-400">
-    <!-- Navigation -->
-    <nav class="border-b-2 border-green-500 bg-black bg-opacity-90 backdrop-blur">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-skull text-3xl text-green-400 glitch"></i>
-                    <h1 class="text-2xl font-bold glitch">BlockHut</h1>
+<body class="text-green-400 min-h-screen overflow-x-hidden">
+    <!-- Fixed Header with Decentralized Status -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black border-b-2 border-green-500">
+        <div class="px-4 py-3">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-2">
+                    <div class="decentralized-indicator">
+                        <i class="fas fa-network-wired text-green-400 text-lg"></i>
+                    </div>
+                    <h1 class="text-lg font-bold glitch">BlockHut DAPP store</h1>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <span class="text-xs text-green-300">//NODE: 0xA4F2...DEAD</span>
-                    <button class="cyber-button px-4 py-2 rounded-none">
-                        <i class="fas fa-plug mr-2"></i>CONNECT WALLET
-                    </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 bg-green-400 rounded-full decentralized-indicator"></div>
+                    <span class="text-xs">1142 PEERS</span>
                 </div>
             </div>
+            
+            <!-- Network Status Bar -->
+            <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-circle text-green-400 text-xs"></i>
+                    <span>IPFS: CONNECTED</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-circle text-green-400 text-xs"></i>
+                    <span>ARWEAVE: SYNCED</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-20">
+        <!-- Decentralized Search & Filter -->
+        <section class="px-4 mb-6">
+            <div class="flex space-x-2 mb-3">
+                <input type="text" 
+                       placeholder="Search decentralized apps..." 
+                       class="flex-1 bg-black cyber-border px-3 py-2 text-sm focus:outline-none focus:border-green-400">
+                <button class="cyber-button px-3 py-2 text-sm">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <!-- Category Filters -->
+            <div class="flex space-x-2 overflow-x-auto pb-2">
+                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap">ALL DAPPS</button>
+                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap bg-green-900">DEFI</button>
+                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap">NFT</button>
+                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap">DAO</button>
+                <button class="cyber-button px-3 py-1 text-xs whitespace-nowrap">PRIVACY</button>
+            </div>
+        </section>
+
+        <!-- Featured Decentralized Apps -->
+        <section class="px-4 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold glitch">// DECENTRALIZED APPS //</h3>
+                <button class="text-xs cyber-button px-2 py-1">VIEW ALL</button>
+            </div>
+            
+            <!-- App List -->
+            <div class="space-y-3">
+                <!-- DApp Card 1 -->
+                <div class="app-card cyber-border p-3 bg-black bg-opacity-70 flex items-center">
+                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center border border-green-500 mr-3">
+                        <i class="fas fa-coins text-xl text-yellow-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-yellow-400">Uniswap DEX</h4>
+                        <p class="text-green-600 text-xs">Decentralized Exchange</p>
+                        <div class="flex items-center mt-1">
+                            <div class="flex items-center mr-3">
+                                <i class="fas fa-users text-green-400 text-xs mr-1"></i>
+                                <span class="text-xs">45.2K</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
+                                <span class="text-xs">4.9</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="cyber-button px-3 py-1 text-xs">OPEN</button>
+                </div>
+
+                <!-- DApp Card 2 -->
+                <div class="app-card cyber-border p-3 bg-black bg-opacity-70 flex items-center">
+                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center border border-green-500 mr-3">
+                        <i class="fas fa-image text-xl text-purple-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-purple-400">OpenSea</h4>
+                        <p class="text-green-600 text-xs">NFT Marketplace</p>
+                        <div class="flex items-center mt-1">
+                            <div class="flex items-center mr-3">
+                                <i class="fas fa-users text-green-400 text-xs mr-1"></i>
+                                <span class="text-xs">28.7K</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
+                                <span class="text-xs">4.7</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="cyber-button px-3 py-1 text-xs">OPEN</button>
+                </div>
+
+                <!-- DApp Card 3 -->
+                <div class="app-card cyber-border p-3 bg-black bg-opacity-70 flex items-center">
+                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center border border-green-500 mr-3">
+                        <i class="fas fa-vote-yea text-xl text-blue-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-blue-400">MakerDAO</h4>
+                        <p class="text-green-600 text-xs">Decentralized Governance</p>
+                        <div class="flex items-center mt-1">
+                            <div class="flex items-center mr-3">
+                                <i class="fas fa-users text-green-400 text-xs mr-1"></i>
+                                <span class="text-xs">15.3K</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
+                                <span class="text-xs">4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="cyber-button px-3 py-1 text-xs">OPEN</button>
+                </div>
+
+                <!-- DApp Card 4 -->
+                <div class="app-card cyber-border p-3 bg-black bg-opacity-70 flex items-center">
+                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center border border-green-500 mr-3">
+                        <i class="fas fa-lock text-xl text-red-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-red-400">Tornado Cash</h4>
+                        <p class="text-green-600 text-xs">Privacy Protocol</p>
+                        <div class="flex items-center mt-1">
+                            <div class="flex items-center mr-3">
+                                <i class="fas fa-users text-green-400 text-xs mr-1"></i>
+                                <span class="text-xs">8.9K</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
+                                <span class="text-xs">4.6</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="cyber-button px-3 py-1 text-xs">OPEN</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Decentralized Stats -->
+        <section class="px-4 mb-6">
+            <div class="cyber-border p-4 bg-black bg-opacity-90">
+                <h4 class="text-md font-bold mb-3 text-center glitch">// DECENTRALIZATION METRICS //</h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-green-400">1,142</div>
+                        <div class="text-xs text-green-600">ACTIVE PEERS</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-yellow-400">847</div>
+                        <div class="text-xs text-green-600">DAPPS HOSTED</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-blue-400">0.001%</div>
+                        <div class="text-xs text-green-600">NETWORK FEE</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-purple-400">100%</div>
+                        <div class="text-xs text-green-600">UPTIME</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IPFS/Filecoin Integration -->
+        <section class="px-4 mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold glitch">// IPFS HOSTED //</h3>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-circle text-green-400 text-xs"></i>
+                    <span class="text-xs">ONLINE</span>
+                </div>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="flex items-center justify-between cyber-border p-2 bg-black bg-opacity-70">
+                    <div class="flex items-center">
+                        <i class="fas fa-cube text-green-400 mr-2"></i>
+                        <span class="text-sm">IPFS: QmXyZ...7aBc</span>
+                    </div>
+                    <span class="text-xs text-green-400">PINNED</span>
+                </div>
+                <div class="flex items-center justify-between cyber-border p-2 bg-black bg-opacity-70">
+                    <div class="flex items-center">
+                        <i class="fas fa-database text-blue-400 mr-2"></i>
+                        <span class="text-sm">ARWEAVE: yX9...kL2</span>
+                    </div>
+                    <span class="text-xs text-green-400">STORED</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Mobile Bottom Navigation - DApp Store Focus -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-green-500">
+        <div class="grid grid-cols-5 gap-0">
+            <button class="cyber-button py-3 text-xs border-r border-green-500 bg-green-900">
+                <i class="fas fa-store block mb-1 text-lg"></i>DAPPS
+            </button>
+            <button class="cyber-button py-3 text-xs border-r border-green-500">
+                <i class="fas fa-search block mb-1 text-lg"></i>FIND
+            </button>
+            <button class="cyber-button py-3 text-xs border-r border-green-500">
+                <i class="fas fa-plus-circle block mb-1 text-lg"></i>UPLOAD
+            </button>
+            <button class="cyber-button py-3 text-xs border-r border-green-500">
+                <i class="fas fa-wallet block mb-1 text-lg"></i>WALLET
+            </button>
+            <button class="cyber-button py-3 text-xs">
+                <i class="fas fa-cog block mb-1 text-lg"></i>NODE
+            </button>
         </div>
     </nav>
-
-    <!-- Hero Section -->
-    <section class="container mx-auto px-4 py-12 text-center border-b-2 border-green-500">
-        <h2 class="text-6xl font-bold mb-4 glitch">// CRYPTO-ANARCHIST APP STORE //</h2>
-        <p class="text-xl mb-8 text-green-300">NO KYC • NO GOVERNANCE • NO MERCY</p>
-        
-        <!-- Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="cyber-border p-6 bg-black bg-opacity-50">
-                <i class="fas fa-network-wired text-4xl text-green-400 mb-3"></i>
-                <h3 class="text-3xl font-bold">∞</h3>
-                <p class="text-green-600">UNCENSORED NODES</p>
-            </div>
-            <div class="cyber-border p-6 bg-black bg-opacity-50">
-                <i class="fas fa-fire text-4xl text-red-500 mb-3"></i>
-                <h3 class="text-3xl font-bold">0.0001%</h3>
-                <p class="text-green-600">FEE (BURN IT ALL)</p>
-            </div>
-            <div class="cyber-border p-6 bg-black bg-opacity-50">
-                <i class="fas fa-mask text-4xl text-yellow-500 mb-3"></i>
-                <h3 class="text-3xl font-bold">100%</h3>
-                <p class="text-green-600">PSEUDONYMOUS</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Apps -->
-    <section class="container mx-auto px-4 py-8">
-        <h3 class="text-3xl font-bold mb-6 glitch">// BLACK MARKET APPS //</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- App Card -->
-            <div class="cyber-border p-4 bg-black bg-opacity-70 hover:bg-green-900 hover:bg-opacity-20 transition cursor-pointer">
-                <div class="w-full h-40 bg-gray-900 mb-3 flex items-center justify-center border border-green-500">
-                    <i class="fas fa-bomb text-6xl text-red-500"></i>
-                </div>
-                <h4 class="font-bold mb-1 text-red-400">DarkPoolSwap</h4>
-                <p class="text-green-600 text-sm mb-2">Unregulated DEX</p>
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-yellow-400">⚡ ANON</span>
-                    <div class="flex items-center">
-                        <i class="fas fa-skull text-red-400 mr-1"></i>
-                        <span>9.9</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- App Card -->
-            <div class="cyber-border p-4 bg-black bg-opacity-70 hover:bg-green-900 hover:bg-opacity-20 transition cursor-pointer">
-                <div class="w-full h-40 bg-gray-900 mb-3 flex items-center justify-center border border-green-500">
-                    <i class="fas fa-user-secret text-6xl text-purple-500"></i>
-                </div>
-                <h4 class="font-bold mb-1 text-purple-400">GhostVPN</h4>
-                <p class="text-green-600 text-sm mb-2">Triple-hop tor</p>
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-yellow-400">⚡ ANON</span>
-                    <div class="flex items-center">
-                        <i class="fas fa-skull text-red-400 mr-1"></i>
-                        <span>9.8</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- App Card -->
-            <div class="cyber-border p-4 bg-black bg-opacity-70 hover:bg-green-900 hover:bg-opacity-20 transition cursor-pointer">
-                <div class="w-full h-40 bg-gray-900 mb-3 flex items-center justify-center border border-green-500">
-                    <i class="fas fa-coins text-6xl text-yellow-500"></i>
-                </div>
-                <h4 class="font-bold mb-1 text-yellow-400">MixerPro</h4>
-                <p class="text-green-600 text-sm mb-2">Privacy mixer</p>
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-yellow-400">⚡ ANON</span>
-                    <div class="flex items-center">
-                        <i class="fas fa-skull text-red-400 mr-1"></i>
-                        <span>10.0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- App Card -->
-            <div class="cyber-border p-4 bg-black bg-opacity-70 hover:bg-green-900 hover:bg-opacity-20 transition cursor-pointer">
-                <div class="w-full h-40 bg-gray-900 mb-3 flex items-center justify-center border border-green-500">
-                    <i class="fas fa-file-contract text-6xl text-cyan-500"></i>
-                </div>
-                <h4 class="font-bold mb-1 text-cyan-400">AssassinDAO</h4>
-                <p class="text-green-600 text-sm mb-2">Smart contracts</p>
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-yellow-400">⚡ ANON</span>
-                    <div class="flex items-center">
-                        <i class="fas fa-skull text-red-400 mr-1"></i>
-                        <span>9.7</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Payment Gateway Demo -->
-    <section class="container mx-auto px-4 py-8">
-        <div class="cyber-border bg-black bg-opacity-90 p-8">
-            <h3 class="text-3xl font-bold mb-6 glitch">// SYSTEM ANARCHY //</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h4 class="text-xl font-bold mb-3 text-red-400">// CORPORATE CHAINS //</h4>
-                    <ul class="space-y-2 text-red-600">
-                        <li><i class="fas fa-times mr-2"></i>30% TAX TO THE MAN</li>
-                        <li><i class="fas fa-times mr-2"></i>SURVEILLANCE CAPITALISM</li>
-                        <li><i class="fas fa-times mr-2"></i>KYC/AML SLAVERY</li>
-                        <li><i class="fas fa-times mr-2"></i>CENTRALIZED BACKDOORS</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-bold mb-3 text-green-400">// OUR CHAOS //</h4>
-                    <ul class="space-y-2 text-green-400">
-                        <li><i class="fas fa-check mr-2"></i>0.0001% BURN RATE</li>
-                        <li><i class="fas fa-check mr-2"></i>COMPLETE DARKNESS</li>
-                        <li><i class="fas fa-check mr-2"></i>NO MASTERS</li>
-                        <li><i class="fas fa-check mr-2"></i>IMMORTAL SMART CONTRACTS</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="border-t-2 border-green-500 mt-16 py-8 bg-black">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-green-600 mb-2">// NO GOVERNMENT • NO BORDERS • NO RULERS //</p>
-            <p class="text-xs text-green-800">DEPLOYED ON: IPFS • ARWEAVE • STORJ • SIA</p>
-        </div>
-    </footer>
 </body>
 </html>
