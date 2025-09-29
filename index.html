@@ -5,54 +5,99 @@
   <title>⚡ CipherStore – Decentralised Crypto-Anarchist App Hub</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <!-- Tailwind + DaisyUI -->
-  <script src="https://cdn.tailwindcss.com"></script>
+
   <link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/cyberpunk.css" rel="stylesheet" />
 
-  <!-- Gun.js P2P database -->
-  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
-<!-- 1.  Reown AppKit + Universal Provider  -->
-<script type="module">
-  import { createAppKit } from 'https://cdn.jsdelivr.net/npm/@reown/appkit@1.0.0/dist/appkit.js';
-  import { WagmiAdapter } from 'https://cdn.jsdelivr.net/npm/@reown/appkit-adapter-wagmi@1.0.0/dist/appkit-adapter-wagmi.js';
-  import { mainnet } from 'https://cdn.jsdelivr.net/npm/viem@2.9.0/chains';
-
-  // 1-a.  Wagmi adapter (handles ethers/viem transparently)
-  const wagmiAdapter = new WagmiAdapter({
-    chains: [mainnet],
-    projectId: 'YOUR_WC_PROJECT_ID', // ← same free ID from cloud.walletconnect.com
-  });
-
-  // 1-b.  Create the modal
-  const modal = createAppKit({
-    adapters: [wagmiAdapter],
-    chains: [mainnet],
-    projectId: 'YOUR_WC_PROJECT_ID',
-    // optional theming
-    themeMode: 'dark',
-    themeVariables: {
-      '--w3m-color-mix': '#00ffaa',
-      '--w3m-color-mix-strength': 30
-    }
-  });
-
-  // 1-c.  Export a minimal ethers signer-like object so the rest of the
-  //       prototype still works without changes.
-  window.wcProvider = {
-    async connect() {
-      await modal.open();
-      return modal.getWalletProvider(); // EIP-1193 provider
-    },
-    async request({ method, params }) {
-      const provider = modal.getWalletProvider();
-      return provider.request({ method, params });
-    }
-  };
-</script>
-  <!-- t we IPFS via web3.storage (client-side) -->
-  <script src="https://unpkg.com/web3.storage@4.5.5/dist/bundle.esm.min.js" type="module"></script>
 </head>
+<script type="module">
+/* ---------- 0.  SINGLE-TAG DEP-LOADER ---------- */
+const [
+  { createAppKit, WagmiAdapter },           // Reown AppKit
+  { mainnet },                              // viem chain
+  Gun,                                      // P2P graph
+  { Web3Storage },                          // IPFS pinning
+  { ethers }                                // ethers v6
+] = await Promise.all([
+  import('https://cdn.jsdelivr.net/npm/@reown/appkit@1.0.0/+esm'),
+  import('https://cdn.jsdelivr.net/npm/viem@2.9.0/chains/+esm'),
+  import('https://cdn.jsdelivr.net/npm/gun@0.2020.1240/gun.js').then(m => m.default),
+  import('https://cdn.jsdelivr.net/npm/web3.storage@4.5.5/dist/bundle.esm.min.js'),
+  import('https://cdn.skypack.dev/ethers@6')
+]);
 
+/* ---------- 1.  INITIALISE REOWN APPKIT ---------- */
+const wagmi = new WagmiAdapter({ chains: [mainnet], projectId: 'YOUR_WC_PROJECT_ID' });
+const modal = createAppKit({ adapters: [wagmi], chains: [mainnet], projectId: 'YOUR_WC_PROJECT_ID' });
+
+/* ---------- 2.  GLOBAL HELPERS ---------- */
+const $ = q => document.querySelector(q);
+const gun = Gun();
+const registry = gun.get('cipherstore/apps');
+const w3s = new Web3Storage({ token: 'YOUR_WEB3_STORAGE_TOKEN' });
+
+let signer, address;
+window.wcProvider = {
+  async connect() { await modal.open(); return modal.getWalletProvider(); },
+  async request(args) { return modal.getWalletProvider().request(args); }
+};
+
+/* ---------- 3.  WALLET CONNECTION ---------- */
+$('#connectWallet').onclick = async () => {
+  await window.wcProvider.connect();
+  const provider = new ethers.BrowserProvider(modal.getWalletProvider());
+  signer = await provider.getSigner();
+  address = await signer.getAddress();
+  $('#connectWallet').textContent = `${address.slice(0,6)}…${address.slice(-4)}`;
+};
+
+/* ---------- 4.  PUBLISH FLOW ---------- */
+$('#publishForm').onsubmit = async e => {
+  e.preventDefault();
+  if (!signer) return alert('Connect wallet first');
+  const data = Object.fromEntries(new FormData(e.target));
+  const file = data.artefact;
+  const cid = await w3s.put([file], { wrapWithDirectory: false });
+
+  const meta = { name: data.appName, version: data.version, description: data.description, cid, publisher: address, ts: Date.now() };
+  const key = `${meta.name.toLowerCase().replace(/\s+/g,'-')}-v${meta.version}`;
+  registry.get(key).put(meta);
+
+  /* optional on-chain registry */
+  const abi = ["function register(string memory key, string memory cid) external"];
+  const contract = new ethers.Contract('0x…yourRegistry…', abi, signer);
+  await contract.register(key, cid);
+
+  e.target.reset(); alert('Published 🎆'); renderApps();
+};
+
+/* ---------- 5.  RENDER APP LIST ---------- */
+function renderApps() {
+  $('#appGrid').innerHTML = '';
+  registry.map().once(meta => {
+    if (!meta?.cid) return;
+    const card = document.createElement('div');
+    card.className = 'card bg-base-200 shadow';
+    card.innerHTML = `
+      <div class="card-body">
+        <h3 class="card-title">${meta.name}<span class="badge badge-outline">v${meta.version}</span></h3>
+        <p class="text-sm">${meta.description}</p>
+        <div class="card-actions justify-between items-center mt-4">
+          <a class="btn btn-sm btn-primary" href="https://w3s.link/ipfs/${meta.cid}" target="_blank">Download</a>
+          <span class="text-xs opacity-60">by ${meta.publisher.slice(0,6)}…</span>
+        </div>
+        <div class="text-xs opacity-70 mt-2">Reviews: <span class="review-count">0</span></div>
+      </div>`;
+    $('#appGrid').appendChild(card);
+    gun.get(`cipherstore/reviews/${meta.name}`).map().once(() => {
+      const span = card.querySelector('.review-count');
+      span.textContent = +span.textContent + 1;
+    });
+  });
+}
+
+/* ---------- 6.  BOOTSTRAP ---------- */
+renderApps();
+</script>
 <body class="min-h-screen bg-base-100 text-base-content">
   <!-- ==================  HEADER  ================== -->
   <header class="navbar sticky top-0 z-50 backdrop-blur bg-base-100/80 border-b border-primary">
