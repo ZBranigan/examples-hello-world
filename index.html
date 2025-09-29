@@ -1,253 +1,202 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="cyberpunk">
 <head>
-  <meta charset="UTF-8" />
-  <title>⚡ CipherStore – Decentralised Crypto-Anarchist App Hub</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/cyberpunk.css" rel="stylesheet" />
-
+  <meta charset="UTF-8">
+  <title>⚡ CipherStore – deps-in-one-tag + status</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <!-- Tailwind + DaisyUI -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/cyberpunk.css" rel="stylesheet">
+  <style>
+    /* tiny helper for status panel */
+    .status-ok   { @apply text-success; }
+    .status-ko   { @apply text-error; }
+    .status-wait { @apply text-warning; }
+  </style>
 </head>
-<script type="module">
-/* ---------- 0.  SINGLE-TAG DEP-LOADER ---------- */
-const [
-  { createAppKit, WagmiAdapter },           // Reown AppKit
-  { mainnet },                              // viem chain
-  Gun,                                      // P2P graph
-  { Web3Storage },                          // IPFS pinning
-  { ethers }                                // ethers v6
-] = await Promise.all([
-  import('https://cdn.jsdelivr.net/npm/@reown/appkit@1.0.0/+esm'),
-  import('https://cdn.jsdelivr.net/npm/viem@2.9.0/chains/+esm'),
-  import('https://cdn.jsdelivr.net/npm/gun@0.2020.1240/gun.js').then(m => m.default),
-  import('https://cdn.jsdelivr.net/npm/web3.storage@4.5.5/dist/bundle.esm.min.js'),
-  import('https://cdn.skypack.dev/ethers@6')
-]);
 
-/* ---------- 1.  INITIALISE REOWN APPKIT ---------- */
-const wagmi = new WagmiAdapter({ chains: [mainnet], projectId: 'YOUR_WC_PROJECT_ID' });
-const modal = createAppKit({ adapters: [wagmi], chains: [mainnet], projectId: 'YOUR_WC_PROJECT_ID' });
-
-/* ---------- 2.  GLOBAL HELPERS ---------- */
-const $ = q => document.querySelector(q);
-const gun = Gun();
-const registry = gun.get('cipherstore/apps');
-const w3s = new Web3Storage({ token: 'YOUR_WEB3_STORAGE_TOKEN' });
-
-let signer, address;
-window.wcProvider = {
-  async connect() { await modal.open(); return modal.getWalletProvider(); },
-  async request(args) { return modal.getWalletProvider().request(args); }
-};
-
-/* ---------- 3.  WALLET CONNECTION ---------- */
-$('#connectWallet').onclick = async () => {
-  await window.wcProvider.connect();
-  const provider = new ethers.BrowserProvider(modal.getWalletProvider());
-  signer = await provider.getSigner();
-  address = await signer.getAddress();
-  $('#connectWallet').textContent = `${address.slice(0,6)}…${address.slice(-4)}`;
-};
-
-/* ---------- 4.  PUBLISH FLOW ---------- */
-$('#publishForm').onsubmit = async e => {
-  e.preventDefault();
-  if (!signer) return alert('Connect wallet first');
-  const data = Object.fromEntries(new FormData(e.target));
-  const file = data.artefact;
-  const cid = await w3s.put([file], { wrapWithDirectory: false });
-
-  const meta = { name: data.appName, version: data.version, description: data.description, cid, publisher: address, ts: Date.now() };
-  const key = `${meta.name.toLowerCase().replace(/\s+/g,'-')}-v${meta.version}`;
-  registry.get(key).put(meta);
-
-  /* optional on-chain registry */
-  const abi = ["function register(string memory key, string memory cid) external"];
-  const contract = new ethers.Contract('0x…yourRegistry…', abi, signer);
-  await contract.register(key, cid);
-
-  e.target.reset(); alert('Published 🎆'); renderApps();
-};
-
-/* ---------- 5.  RENDER APP LIST ---------- */
-function renderApps() {
-  $('#appGrid').innerHTML = '';
-  registry.map().once(meta => {
-    if (!meta?.cid) return;
-    const card = document.createElement('div');
-    card.className = 'card bg-base-200 shadow';
-    card.innerHTML = `
-      <div class="card-body">
-        <h3 class="card-title">${meta.name}<span class="badge badge-outline">v${meta.version}</span></h3>
-        <p class="text-sm">${meta.description}</p>
-        <div class="card-actions justify-between items-center mt-4">
-          <a class="btn btn-sm btn-primary" href="https://w3s.link/ipfs/${meta.cid}" target="_blank">Download</a>
-          <span class="text-xs opacity-60">by ${meta.publisher.slice(0,6)}…</span>
-        </div>
-        <div class="text-xs opacity-70 mt-2">Reviews: <span class="review-count">0</span></div>
-      </div>`;
-    $('#appGrid').appendChild(card);
-    gun.get(`cipherstore/reviews/${meta.name}`).map().once(() => {
-      const span = card.querySelector('.review-count');
-      span.textContent = +span.textContent + 1;
-    });
-  });
-}
-
-/* ---------- 6.  BOOTSTRAP ---------- */
-renderApps();
-</script>
 <body class="min-h-screen bg-base-100 text-base-content">
-  <!-- ==================  HEADER  ================== -->
+  <!-- ===========  STATUS PANEL  =========== -->
+  <section class="container mx-auto px-4 pt-4">
+    <div class="card bg-base-200 shadow">
+      <div class="card-body p-4">
+        <h2 class="card-title text-sm">Boot Status</h2>
+        <ul id="statusList" class="text-xs space-y-1 font-mono"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========  HEADER  =========== -->
   <header class="navbar sticky top-0 z-50 backdrop-blur bg-base-100/80 border-b border-primary">
     <div class="flex-1 px-2 lg:flex-none">
-      <a class="text-lg font-bold select-none">⚡ CipherStore</a>
+      <span class="text-lg font-bold select-none">⚡ CipherStore</span>
     </div>
-    <div class="flex justify-end flex-1 px-2">
-      <button id="connectWallet" class="btn btn-primary btn-sm">Connect Wallet</button>
-   <appkit-button />
+    <div class="flex justify-end px-2">
+      <button id="connectWallet" class="btn btn-primary btn-sm" disabled>Connect Wallet</button>
     </div>
   </header>
 
+  <!-- ===========  MAIN  =========== -->
   <main class="container mx-auto px-4 py-8 space-y-10">
-
-    <!-- ==============  PUBLISH CARD  ============== -->
+    <!-- PUBLISH CARD -->
     <section class="card bg-base-200 shadow-xl">
       <div class="card-body">
         <h2 class="card-title">Publish Build</h2>
-        <p class="text-sm opacity-70">Drop your signed .apk / .zip below.  Metadata + IPFS hash will be pinned and registered on-chain.</p>
-
+        <p class="text-sm opacity-70">Drop signed .apk / .zip.  Metadata + IPFS hash → pinned & on-chain.</p>
         <form id="publishForm" class="space-y-4 mt-4">
-          <input required name="appName" type="text" placeholder="App name" class="input input-bordered w-full" />
-          <input required name="version" type="text" placeholder="Version" class="input input-bordered w-full" />
+          <input required name="appName" type="text" placeholder="App name" class="input input-bordered w-full">
+          <input required name="version" type="text" placeholder="Version" class="input input-bordered w-full">
           <textarea required name="description" class="textarea textarea-bordered w-full" placeholder="Description"></textarea>
-
           <label class="block">
             <span class="label-text">Build artefact</span>
-            <input required name="artefact" type="file" class="file-input file-input-bordered w-full" />
+            <input required name="artefact" type="file" class="file-input file-input-bordered w-full">
           </label>
-
           <button class="btn btn-accent w-full">Publish & Register</button>
         </form>
       </div>
     </section>
 
-    <!-- ==============  APP LIST  ============== -->
+    <!-- DISCOVER -->
     <section>
       <h2 class="text-2xl font-bold mb-4">Discover</h2>
       <div id="appGrid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
     </section>
-
   </main>
 
-  <!-- ==================  FOOTER  ================== -->
+  <!-- ===========  FOOTER  =========== -->
   <footer class="p-8 text-center text-xs opacity-50">
     Built with ☠️ for the decentralised future.
   </footer>
 
-  <!-- ==================  SCRIPT  ================== -->
+  <!-- =========================================================
+       =  ONE-SCRIPT LOADER + STATUS + APP LOGIC
+       ========================================================= -->
   <script type="module">
-    /* ---------- 0.  HELPERS  ---------- */
-    const $ = q => document.querySelector(q);
-    const gun = Gun(); // peers via public relays by default
-    const registry = gun.get('cipherstore/apps');
+  /* ----------  tiny status helper  ---------- */
+  const status = (id, ok, msg) => {
+    const li = document.getElementById(id) || (() => {
+      const el = document.createElement('li'); el.id = id; $('#statusList').appendChild(el); return el;
+    })();
+    li.className = ok ? 'status-ok' : (ok === false ? 'status-ko' : 'status-wait');
+    li.textContent = `[${ok ? 'OK' : (ok === false ? 'FAIL' : '...')}] ${msg}`;
+  };
 
-    const web3storage = new Web3Storage({ token: 'YOUR_WEB3_STORAGE_TOKEN' }); // free 1 GB
+  /* ----------  0.  kick-off  ---------- */
+  status('tail', null, 'Tailwind / DaisyUI (CSS) – loaded');
+  status('deps', null, 'Downloading JS modules …');
 
-    let signer, address;
+  /* ----------  1.  load everything  ---------- */
+  let createAppKit, WagmiAdapter, mainnet, Gun, Web3Storage, ethers;
+  try {
+    [
+      { createAppKit, WagmiAdapter },
+      { mainnet },
+      Gun,
+      { Web3Storage },
+      { ethers }
+    ] = await Promise.all([
+      import('https://cdn.jsdelivr.net/npm/@reown/appkit@1.0.0/+esm'),
+      import('https://cdn.jsdelivr.net/npm/viem@2.9.0/chains/+esm'),
+      import('https://cdn.jsdelivr.net/npm/gun@0.2020.1240/gun.js').then(m => m.default),
+      import('https://cdn.jsdelivr.net/npm/web3.storage@4.5.5/dist/bundle.esm.min.js'),
+      import('https://cdn.skypack.dev/ethers@6')
+    ]);
+    status('deps', true, 'All JS modules loaded');
+  } catch (e) {
+    status('deps', false, 'Module load failed – ' + e.message);
+    throw e;
+  }
 
-    /* ---------- 1.  WALLET ---------- */
-    $('#connectWallet').onclick = async () => {
-      await window.wcProvider.connect();
-      signer = window.wcProvider;
-      address = await signer.request({ method: 'eth_accounts' }).then(a => a[0]);
+  /* ----------  2.  Reown AppKit  ---------- */
+  let modal, provider, signer, address;
+  try {
+    const wagmi = new WagmiAdapter({ chains: [mainnet], projectId: 'YOUR_WC_PROJECT_ID' });
+    modal = createAppKit({ adapters: [wagmi], chains: [mainnet], projectId: 'YOUR_WC_PROJECT_ID' });
+    status('wc', true, 'Reown AppKit ready');
+  } catch (e) {
+    status('wc', false, 'AppKit – ' + e.message);
+  }
+
+  /* ----------  3.  Gun / IPFS  ---------- */
+  const gun = Gun();
+  const w3s = new Web3Storage({ token: 'YOUR_WEB3_STORAGE_TOKEN' });
+  status('gun', true, 'Gun.js P2P graph online');
+  status('ipfs', true, 'Web3.Storage IPFS client ready');
+
+  /* ----------  4.  UI helpers  ---------- */
+  const $ = q => document.querySelector(q);
+  const registry = gun.get('cipherstore/apps');
+
+  /* ----------  5.  wallet connect button  ---------- */
+  $('#connectWallet').disabled = false;
+  $('#connectWallet').onclick = async () => {
+    try {
+      await modal.open();
+      const ethersProvider = new ethers.BrowserProvider(modal.getWalletProvider());
+      signer = await ethersProvider.getSigner();
+      address = await signer.getAddress();
       $('#connectWallet').textContent = `${address.slice(0,6)}…${address.slice(-4)}`;
-    };
+      status('wallet', true, `Connected – ${address}`);
+    } catch (e) {
+      status('wallet', false, 'Wallet – ' + e.message);
+    }
+  };
 
-    /* ---------- 2.  PUBLISH ---------- */
-    $('#publishForm').onsubmit = async e => {
-      e.preventDefault();
-      if (!signer) return alert('Connect wallet first');
-
+  /* ----------  6.  publish flow  ---------- */
+  $('#publishForm').onsubmit = async e => {
+    e.preventDefault();
+    if (!signer) return alert('Connect wallet first');
+    try {
       const data = Object.fromEntries(new FormData(e.target));
       const file = data.artefact;
-      const cid = await web3storage.put([file], { wrapWithDirectory: false });
+      status('pin', null, 'Pinning to IPFS …');
+      const cid = await w3s.put([file], { wrapWithDirectory: false });
+      status('pin', true, `Pinned – ${cid}`);
 
-      const meta = {
-        name: data.appName,
-        version: data.version,
-        description: data.description,
-        cid,
-        publisher: address,
-        ts: Date.now()
-      };
-
-      // save to Gun
+      const meta = { name: data.appName, version: data.version, description: data.description, cid, publisher: address, ts: Date.now() };
       const key = `${meta.name.toLowerCase().replace(/\s+/g,'-')}-v${meta.version}`;
       registry.get(key).put(meta);
 
-      // optional on-chain registry (see Solidity stub below)
-      await registerOnChain(key, cid);
+      /* optional on-chain registry */
+      const abi = ["function register(string memory key, string memory cid) external"];
+      const contract = new ethers.Contract('0x…yourRegistry…', abi, signer);
+      await contract.register(key, cid);
 
       e.target.reset();
-      alert('Published 🎆');
+      status('tx', true, 'On-chain registry updated');
       renderApps();
-    };
+    } catch (err) {
+      status('pin', false, err.message);
+    }
+  };
 
-    /* ---------- 3.  RENDER  ---------- */
-    async function renderApps() {
-      $('#appGrid').innerHTML = '';
-      registry.map().once(meta => {
-        if (!meta || !meta.cid) return;
-        const card = document.createElement('div');
-        card.className = 'card bg-base-200 shadow';
-        card.innerHTML = `
-          <div class="card-body">
-            <h3 class="card-title">${meta.name} <span class="badge badge-outline">v${meta.version}</span></h3>
-            <p class="text-sm">${meta.description}</p>
-            <div class="card-actions justify-between items-center mt-4">
-              <a class="btn btn-sm btn-primary" href="https://w3s.link/ipfs/${meta.cid}" target="_blank">Download</a>
-              <span class="text-xs opacity-60">by ${meta.publisher.slice(0,6)}…</span>
-            </div>
-            <div class="text-xs opacity-70 mt-2">Reviews: <span class="review-count">0</span></div>
-          </div>`;
-        $('#appGrid').appendChild(card);
-
-        // load reviews
-        gun.get(`cipherstore/reviews/${meta.name}`).map().once(r => {
-          if (!r) return;
-          card.querySelector('.review-count').textContent =
-            parseInt(card.querySelector('.review-count').textContent) + 1;
-        });
+  /* ----------  7.  render app grid  ---------- */
+  function renderApps() {
+    $('#appGrid').innerHTML = '';
+    registry.map().once(meta => {
+      if (!meta?.cid) return;
+      const card = document.createElement('div');
+      card.className = 'card bg-base-200 shadow';
+      card.innerHTML = `
+        <div class="card-body">
+          <h3 class="card-title">${meta.name}<span class="badge badge-outline">v${meta.version}</span></h3>
+          <p class="text-sm">${meta.description}</p>
+          <div class="card-actions justify-between items-center mt-4">
+            <a class="btn btn-sm btn-primary" href="https://w3s.link/ipfs/${meta.cid}" target="_blank">Download</a>
+            <span class="text-xs opacity-60">by ${meta.publisher.slice(0,6)}…</span>
+          </div>
+          <div class="text-xs opacity-70 mt-2">Reviews: <span class="review-count">0</span></div>
+        </div>`;
+      $('#appGrid').appendChild(card);
+      gun.get(`cipherstore/reviews/${meta.name}`).map().once(() => {
+        const span = card.querySelector('.review-count');
+        span.textContent = +span.textContent + 1;
       });
-    }
-
-    /* ---------- 4.  ON-CHAIN REGISTRY (optional) ---------- */
-    async function registerOnChain(key, cid) {
-      const abi = [
-        "function register(string memory key, string memory cid) external"
-      ];
-      const registryAddress = "0x...yourDeployedContract...";
-      const ethers = await import("https://cdn.skypack.dev/ethers");
-      const contract = new ethers.Contract(registryAddress, abi, signer);
-      return contract.register(key, cid);
-    }
-
-    renderApps();
-  </script>
-
-  <!--  
-  ----------  Solidity stub  ----------
-  SPDX-License-Identifier: MIT
-  pragma solidity ^0.8.0;
-
-  contract CipherRegistry {
-      mapping(string => string) public cidOf; // key -> IPFS hash
-      function register(string calldata key, string calldata cid) external {
-          cidOf[key] = cid;
-      }
+    });
   }
-  -->
+
+  /* ----------  8.  bootstrap  ---------- */
+  renderApps();
+  </script>
 </body>
 </html>
