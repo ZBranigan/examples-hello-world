@@ -1,81 +1,180 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="cyberpunk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BlockHut // Responsive DaisyUI v5</title>
+  <meta charset="UTF-8" />
+  <title>⚡ CipherStore – Decentralised Crypto-Anarchist App Hub</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <!-- Tailwind v4 + DaisyUI v5 -->
+  <!-- Tailwind + DaisyUI -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.1.23/dist/daisyui.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/cyberpunk.css" rel="stylesheet" />
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-    body { font-family: 'Share Tech Mono', monospace; background: #0a0a0a; }
-    .glitch { animation: glitch 3s infinite; text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; }
-    @keyframes glitch { 0%, 100% { text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; } 15% { text-shadow: -0.03em -0.015em 0 #00fffc, 0.015em 0.015em 0 #fc00ff, -0.03em -0.03em 0 #fffc00; } }
-    .app-shell { display: flex; flex-direction: column; min-height: 100vh; }
-    header, footer { flex-shrink: 0; background: #111 !important; border-color: #00ff00 !important; }
-    main { flex: 1 1 auto; overflow-y: auto; background: #0a0a0a; }
-    .offline-pulse { animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-  </style>
+  <!-- Gun.js P2P database -->
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+
+  <!-- WalletConnect web3modal -->
+  <script type="module">
+    import { EthereumProvider } from "https://unpkg.com/@walletconnect/ethereum-provider@2.11.0/dist/index.es.js";
+    window.wcProvider = await EthereumProvider.init({
+      projectId: "YOUR_WC_PROJECT_ID", // <-- free at cloud.walletconnect.com
+      chains: [1], // mainnet for registry
+      showQrModal: true
+    });
+  </script>
+
+  <!-- IPFS via web3.storage (client-side) -->
+  <script src="https://unpkg.com/web3.storage@4.5.5/dist/bundle.esm.min.js" type="module"></script>
 </head>
 
-<body class="text-base-content">
-  <div class="app-shell">
-    <!-- ===== HEADER ===== -->
-    <header class="border-b border-primary px-4 py-3">
-      <div class="max-w-5xl mx-auto flex items-center justify-between">
-        <div class="flex items-center space-x-3"><span class="offline-pulse text-primary"><i class="fa-solid fa-skull text-xl"></i></span><h1 class="text-lg font-bold glitch">BlockHut</h1></div>
-        <div class="flex items-center space-x-3"><span class="text-xs hidden sm:inline">1142 PEERS</span>
-          <!-- theme switcher -->
-          <select id="themeSelect" class="select select-bordered select-sm max-w-xs"><option value="light">🌕 Light</option><option value="dark" selected>🌑 Dark</option><option value="cyberpunk">🌈 Cyberpunk</option><option value="synthwave">🌆 Synthwave</option></select>
-        </div>
+<body class="min-h-screen bg-base-100 text-base-content">
+  <!-- ==================  HEADER  ================== -->
+  <header class="navbar sticky top-0 z-50 backdrop-blur bg-base-100/80 border-b border-primary">
+    <div class="flex-1 px-2 lg:flex-none">
+      <a class="text-lg font-bold select-none">⚡ CipherStore</a>
+    </div>
+    <div class="flex justify-end flex-1 px-2">
+      <button id="connectWallet" class="btn btn-primary btn-sm">Connect Wallet</button>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8 space-y-10">
+
+    <!-- ==============  PUBLISH CARD  ============== -->
+    <section class="card bg-base-200 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Publish Build</h2>
+        <p class="text-sm opacity-70">Drop your signed .apk / .zip below.  Metadata + IPFS hash will be pinned and registered on-chain.</p>
+
+        <form id="publishForm" class="space-y-4 mt-4">
+          <input required name="appName" type="text" placeholder="App name" class="input input-bordered w-full" />
+          <input required name="version" type="text" placeholder="Version" class="input input-bordered w-full" />
+          <textarea required name="description" class="textarea textarea-bordered w-full" placeholder="Description"></textarea>
+
+          <label class="block">
+            <span class="label-text">Build artefact</span>
+            <input required name="artefact" type="file" class="file-input file-input-bordered w-full" />
+          </label>
+
+          <button class="btn btn-accent w-full">Publish & Register</button>
+        </form>
       </div>
-      <div class="max-w-5xl mx-auto px-4 pt-2 flex items-center justify-between text-xs"><div><i class="fa-solid fa-circle text-success text-xs"></i> IPFS: CONNECTED</div><div><i class="fa-solid fa-circle text-success text-xs"></i> ARWEAVE: SYNCED</div></div>
-    </header>
+    </section>
 
-    <!-- ===== MAIN ===== -->
-    <main class="px-4 py-6"><div class="max-w-5xl mx-auto space-y-6">
-      <!-- Search -->
-      <section><form action="." method="get" class="flex space-x-2 mb-3"><input name="q" type="text" placeholder="Search anarchist apps..." class="input input-bordered input-sm w-full"><button class="btn btn-primary btn-sm"><i class="fa-solid fa-search"></i></button></form>
-        <div class="flex space-x-2 overflow-x-auto pb-2"><a href="?cat=all" class="btn btn-outline btn-xs btn-primary">ALL APPS</a><a href="?cat=defi" class="btn btn-outline btn-xs">DeFi</a><a href="?cat=nft" class="btn btn-outline btn-xs">NFT</a><a href="?cat=dao" class="btn btn-outline btn-xs">DAO</a><a href="?cat=privacy" class="btn btn-outline btn-xs">Privacy</a></div>
-      </section>
+    <!-- ==============  APP LIST  ============== -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Discover</h2>
+      <div id="appGrid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+    </section>
 
-      <!-- Governance -->
-      <section><div class="card card-bordered border-primary bg-base-200 shadow-md"><div class="card-body items-center text-center py-4"><h2 class="card-title text-sm glitch">// ANARCHIST GOVERNANCE //</h2><p class="text-xs text-base-content/70 mt-1">Zero-fee storage · Censorship-resistant payment gateway · Open telemetry · No rulers</p></div></div></section>
+  </main>
 
-      <!-- App Grid -->
-      <section><div class="flex items-center justify-between mb-4"><h2 class="text-lg font-bold glitch">// DECENTRALIZED APPS //</h2><a href="?all=true" class="btn btn-outline btn-xs">View All</a></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Card --><div class="card card-bordered border-primary bg-base-200 shadow-md"><figure class="px-4 pt-4"><div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center"><i class="fa-solid fa-coins text-3xl text-warning"></i></div></figure><div class="card-body items-center text-center py-4"><h3 class="card-title text-sm">Uniswap DEX</h3><p class="text-xs text-base-content/70">Decentralized Exchange</p><div class="flex items-center space-x-3 text-xs mt-2"><span><i class="fa-solid fa-users text-success mr-1"></i>45.2K</span><span><i class="fa-solid fa-star text-warning mr-1"></i>4.9</span></div><div class="card-actions mt-3"><button class="btn btn-primary btn-sm">Open App</button></div></div></div>
-          <!-- Card --><div class="card card-bordered border-primary bg-base-200 shadow-md"><figure class="px-4 pt-4"><div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center"><i class="fa-solid fa-image text-3xl text-secondary"></i></div></figure><div class="card-body items-center text-center py-4"><h3 class="card-title text-sm">OpenSea</h3><p class="text-xs text-base-content/70">NFT Marketplace</p><div class="flex items-center space-x-3 text-xs mt-2"><span><i class="fa-solid fa-users text-success mr-1"></i>28.7K</span><span><i class="fa-solid fa-star text-warning mr-1"></i>4.7</span></div><div class="card-actions mt-3"><button class="btn btn-primary btn-sm">Open App</button></div></div></div>
-          <!-- Card --><div class="card card-bordered border-primary bg-base-200 shadow-md"><figure class="px-4 pt-4"><div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center"><i class="fa-solid fa-vote-yea text-3xl text-info"></i></div></figure><div class="card-body items-center text-center py-4"><h3 class="card-title text-sm">MakerDAO</h3><p class="text-xs text-base-content/70">Decentralized Governance</p><div class="flex items-center space-x-3 text-xs mt-2"><span><i class="fa-solid fa-users text-success mr-1"></i>15.3K</span><span><i class="fa-solid fa-star text-warning mr-1"></i>4.8</span></div><div class="card-actions mt-3"><button class="btn btn-primary btn-sm">Open App</button></div></div></div>
-        </div>
-      </section>
+  <!-- ==================  FOOTER  ================== -->
+  <footer class="p-8 text-center text-xs opacity-50">
+    Built with ☠️ for the decentralised future.
+  </footer>
 
-      <!-- Metrics --><section><div class="card card-bordered border-primary bg-base-200"><div class="card-body"><h3 class="card-title text-sm justify-center glitch">// ANARCHY METRICS //</h3><div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mt-4"><div><div class="text-xl font-bold text-success">1,142</div><div class="text-xs text-base-content/70">PEERS</div></div><div><div class="text-xl font-bold text-warning">847</div><div class="text-xs text-base-content/70">APPS</div></div><div><div class="text-xl font-bold text-info">0.001%</div><div class="text-xs text-base-content/70">FEE</div></div><div><div class="text-xl font-bold text-secondary">100%</div><div class="text-xs text-base-content/70">UPTIME</div></div></div></div></div></section>
-    </div></main>
+  <!-- ==================  SCRIPT  ================== -->
+  <script type="module">
+    /* ---------- 0.  HELPERS  ---------- */
+    const $ = q => document.querySelector(q);
+    const gun = Gun(); // peers via public relays by default
+    const registry = gun.get('cipherstore/apps');
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="border-t border-primary px-4 py-2"><div class="max-w-5xl mx-auto grid grid-cols-5 gap-0 text-center text-xs"><a href="?nav=apps" class="btn btn-ghost btn-xs rounded-none"><i class="fa-solid fa-store block mb-1 text-lg"></i>Apps</a><a href="?nav=find" class="btn btn-ghost btn-xs rounded-none"><i class="fa-solid fa-search block mb-1 text-lg"></i>Find</a><a href="?nav=upload" class="btn btn-ghost btn-xs rounded-none"><i class="fa-solid fa-plus-circle block mb-1 text-lg"></i>Upload</a><a href="?nav=wallet" class="btn btn-ghost btn-xs rounded-none"><i class="fa-solid fa-wallet block mb-1 text-lg"></i>Wallet</a><a href="?nav=node" class="btn btn-ghost btn-xs rounded-none"><i class="fa-solid fa-cog block mb-1 text-lg"></i>Node</a></div></footer>
-  </div>
+    const web3storage = new Web3Storage({ token: 'YOUR_WEB3_STORAGE_TOKEN' }); // free 1 GB
 
-  <!-- ===== THEME SWITCHER ===== -->
-  <script>
-    const sel = document.getElementById('themeSelect');
-    if (sel) {
-      const saved = localStorage.getItem('theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', saved);
-      sel.value = saved;
-      sel.addEventListener('change', e => {
-        const t = e.target.value;
-        document.documentElement.setAttribute('data-theme', t);
-        localStorage.setItem('theme', t);
+    let signer, address;
+
+    /* ---------- 1.  WALLET ---------- */
+    $('#connectWallet').onclick = async () => {
+      await window.wcProvider.connect();
+      signer = window.wcProvider;
+      address = await signer.request({ method: 'eth_accounts' }).then(a => a[0]);
+      $('#connectWallet').textContent = `${address.slice(0,6)}…${address.slice(-4)}`;
+    };
+
+    /* ---------- 2.  PUBLISH ---------- */
+    $('#publishForm').onsubmit = async e => {
+      e.preventDefault();
+      if (!signer) return alert('Connect wallet first');
+
+      const data = Object.fromEntries(new FormData(e.target));
+      const file = data.artefact;
+      const cid = await web3storage.put([file], { wrapWithDirectory: false });
+
+      const meta = {
+        name: data.appName,
+        version: data.version,
+        description: data.description,
+        cid,
+        publisher: address,
+        ts: Date.now()
+      };
+
+      // save to Gun
+      const key = `${meta.name.toLowerCase().replace(/\s+/g,'-')}-v${meta.version}`;
+      registry.get(key).put(meta);
+
+      // optional on-chain registry (see Solidity stub below)
+      await registerOnChain(key, cid);
+
+      e.target.reset();
+      alert('Published 🎆');
+      renderApps();
+    };
+
+    /* ---------- 3.  RENDER  ---------- */
+    async function renderApps() {
+      $('#appGrid').innerHTML = '';
+      registry.map().once(meta => {
+        if (!meta || !meta.cid) return;
+        const card = document.createElement('div');
+        card.className = 'card bg-base-200 shadow';
+        card.innerHTML = `
+          <div class="card-body">
+            <h3 class="card-title">${meta.name} <span class="badge badge-outline">v${meta.version}</span></h3>
+            <p class="text-sm">${meta.description}</p>
+            <div class="card-actions justify-between items-center mt-4">
+              <a class="btn btn-sm btn-primary" href="https://w3s.link/ipfs/${meta.cid}" target="_blank">Download</a>
+              <span class="text-xs opacity-60">by ${meta.publisher.slice(0,6)}…</span>
+            </div>
+            <div class="text-xs opacity-70 mt-2">Reviews: <span class="review-count">0</span></div>
+          </div>`;
+        $('#appGrid').appendChild(card);
+
+        // load reviews
+        gun.get(`cipherstore/reviews/${meta.name}`).map().once(r => {
+          if (!r) return;
+          card.querySelector('.review-count').textContent =
+            parseInt(card.querySelector('.review-count').textContent) + 1;
+        });
       });
     }
+
+    /* ---------- 4.  ON-CHAIN REGISTRY (optional) ---------- */
+    async function registerOnChain(key, cid) {
+      const abi = [
+        "function register(string memory key, string memory cid) external"
+      ];
+      const registryAddress = "0x...yourDeployedContract...";
+      const ethers = await import("https://cdn.skypack.dev/ethers");
+      const contract = new ethers.Contract(registryAddress, abi, signer);
+      return contract.register(key, cid);
+    }
+
+    renderApps();
   </script>
+
+  <!--  
+  ----------  Solidity stub  ----------
+  SPDX-License-Identifier: MIT
+  pragma solidity ^0.8.0;
+
+  contract CipherRegistry {
+      mapping(string => string) public cidOf; // key -> IPFS hash
+      function register(string calldata key, string calldata cid) external {
+          cidOf[key] = cid;
+      }
+  }
+  -->
 </body>
 </html>
