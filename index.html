@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BlockHut // No-JS Anarchist Store</title>
+  <title>BlockHut // Offline-First Anarchist Store</title>
 
   <!-- DaisyUI + Tailwind -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@5.1.23/dist/daisyui.css" rel="stylesheet">
@@ -11,256 +11,221 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-    :root {
-      /* cyber-anarchist palette */
-      --bg: #0a0a0a;
-      --fg: #00ff00;
-      --accent: #ff0033;
-      --muted: #222;
+    body { 
+      font-family: 'Share Tech Mono', monospace; 
+      background: #0a0a0a;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { min-height: 100%; font-family: 'Share Tech Mono', monospace; background: var(--bg); color: var(--fg); }
-    a { color: inherit; text-decoration: none; }
-
-    /* pixel-perfect navbar (no transparency) */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
-      background: var(--muted);
-      border-bottom: 2px solid var(--fg);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
+    /* glitch title */
+    .glitch {
+      animation: glitch 4s infinite;
+      text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00;
     }
-    .navbar__left { display: flex; align-items: center; gap: 8px; }
-    .navbar__title { font-size: 18px; font-weight: 700; letter-spacing: -1px; }
-    .navbar__right { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-    .pulse::before {
-      content: '';
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background: var(--fg);
-      border-radius: 50%;
-      margin-right: 4px;
-      animation: pulse 1.5s infinite;
+    @keyframes glitch {
+      0%, 100% { text-shadow: 0.03em 0 0 #00fffc, -0.015em -0.03em 0 #fc00ff, 0.015em 0.03em 0 #fffc00; }
+      15% { text-shadow: -0.03em -0.015em 0 #00fffc, 0.015em 0.015em 0 #fc00ff, -0.03em -0.03em 0 #fffc00; }
     }
-    @keyframes pulse { 50% { opacity: .3; } }
-
-    /* content offset for fixed navbar */
-    .content {
-      padding-top: 64px; /* exact navbar height */
-      padding-bottom: 80px; /* bottom nav height */
-      min-height: 100vh;
+    /* pulse for offline indicator */
+    .offline-pulse {
+      animation: pulse 2s infinite;
     }
-
-    /* bottom nav (no transparency) */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 80px;
-      background: var(--muted);
-      border-top: 2px solid var(--fg);
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      place-items: center;
-      font-size: 10px;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
-    .bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .bottom-nav i { font-size: 20px; }
-
-    /* card grid */
-    .grid {
-      display: grid;
-      gap: 12px;
-      padding: 16px;
-    }
-    .card {
-      background: var(--muted);
-      border: 1px solid var(--fg);
-      border-radius: 4px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    .card__icon {
-      width: 64px;
-      height: 64px;
-      background: #000;
-      border: 1px solid var(--fg);
-      border-radius: 4px;
-      display: grid;
-      place-items: center;
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-    .card__title { font-size: 14px; font-weight: 700; }
-    .card__desc { font-size: 11px; opacity: .7; margin: 4px 0; }
-    .card__stats { font-size: 10px; display: flex; gap: 12px; margin-top: 4px; }
-    .card__btn {
-      margin-top: 8px;
-      padding: 4px 12px;
-      font-size: 11px;
-      background: #000;
-      border: 1px solid var(--fg);
-      color: var(--fg);
-      border-radius: 2px;
-      cursor: pointer;
-    }
-    .card__btn:active { background: var(--fg); color: #000; }
-
-    /* search bar */
-    .search-bar {
-      display: flex;
-      gap: 8px;
-      padding: 0 16px 12px;
-    }
-    .search-bar input {
-      flex: 1;
-      padding: 8px 12px;
-      font-size: 12px;
-      background: #000;
-      border: 1px solid var(--fg);
-      color: var(--fg);
-      border-radius: 2px;
-    }
-    .search-bar button {
-      padding: 8px 12px;
-      font-size: 12px;
-      background: var(--fg);
-      color: #000;
-      border: none;
-      border-radius: 2px;
-    }
-
-    /* theme selector inside navbar */
-    .theme-select {
-      font-size: 11px;
-      padding: 4px 8px;
-      background: #000;
-      border: 1px solid var(--fg);
-      color: var(--fg);
-      border-radius: 2px;
+    /* no-js fallback: hide theme selector */
+    .no-js .theme-select { display: none; }
+    /* tiny screens */
+    @media (max-width: 360px) {
+      .btn-nav { font-size: 0.65rem; padding: 0.25rem 0.4rem; }
     }
   </style>
-<base target="_blank">
+
+  <!-- Progressive enhancement: remove .no-js if JS works -->
+  <script>document.documentElement.classList.remove('no-js');</script>
 </head>
 
-<body>
-  <!-- ===== NAVBAR ===== -->
-  <header class="navbar">
-    <div class="navbar__left">
-      <span class="pulse"></span>
-      <h1 class="navbar__title">BlockHut</h1>
+<body class="text-base-content min-h-screen overflow-x-hidden">
+
+  <!-- ========== NAVBAR (non-transparent) ========== -->
+  <header class="sticky top-0 z-50 bg-[#111] border-b border-primary px-3 py-3">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <!-- Left -->
+      <div class="flex items-center space-x-3">
+        <span class="offline-pulse text-primary"><i class="fa-solid fa-skull text-xl"></i></span>
+        <h1 class="text-base font-bold glitch">BlockHut</h1>
+      </div>
+
+      <!-- Right -->
+      <div class="flex items-center space-x-3">
+        <!-- Offline indicator -->
+        <span class="text-xs hidden sm:inline">1142 PEERS</span>
+        <!-- Theme select (hidden if no-js) -->
+        <select id="themeSelect" class="select select-bordered select-sm max-w-xs theme-select">
+          <option value="light">🌕 Light</option>
+          <option value="dark" selected>🌑 Dark</option>
+          <option value="cyberpunk">🌈 Cyberpunk</option>
+          <option value="synthwave">🌆 Synthwave</option>
+        </select>
+      </div>
     </div>
-    <div class="navbar__right">
-      <span>1142 PEERS</span>
-      <select id="theme" class="theme-select" onchange="document.documentElement.setAttribute('data-theme', this.value)">
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-        <option value="cyberpunk">Cyber</option>
-        <option value="synthwave">Wave</option>
-      </select>
+
+    <!-- Network bar -->
+    <div class="max-w-5xl mx-auto px-3 pt-2 flex items-center justify-between text-xs">
+      <div><i class="fa-solid fa-circle text-success text-xs"></i> IPFS: CONNECTED</div>
+      <div><i class="fa-solid fa-circle text-success text-xs"></i> ARWEAVE: SYNCED</div>
     </div>
   </header>
 
-  <!-- ===== CONTENT (offset for navbar) ===== -->
-  <main class="content">
+  <!-- ========== MAIN (padded for sticky nav) ========== -->
+  <main class="px-3 py-6 bg-[#0a0a0a]">
 
-    <!-- Search -->
-    <div class="search-bar">
-      <input type="text" placeholder="Search anarchist apps...">
-      <button><i class="fa-solid fa-search"></i></button>
-    </div>
+    <!-- Search + Categories -->
+    <section class="mb-6 max-w-3xl mx-auto">
+      <form action="." method="get" class="flex space-x-2 mb-3">
+        <input name="q" type="text" placeholder="Search anarchist apps..." class="input input-bordered input-sm w-full">
+        <button class="btn btn-primary btn-sm"><i class="fa-solid fa-search"></i></button>
+      </form>
+      <div class="flex space-x-2 overflow-x-auto pb-2">
+        <a href="?cat=all" class="btn btn-outline btn-xs btn-primary">ALL APPS</a>
+        <a href="?cat=defi" class="btn btn-outline btn-xs">DeFi</a>
+        <a href="?cat=nft" class="btn btn-outline btn-xs">NFT</a>
+        <a href="?cat=dao" class="btn btn-outline btn-xs">DAO</a>
+        <a href="?cat=privacy" class="btn btn-outline btn-xs">Privacy</a>
+      </div>
+    </section>
 
-    <!-- Governance Banner -->
-    <div class="card" style="margin: 0 16px 16px;">
-      <div class="card__title glitch">// ANARCHIST GOVERNANCE //</div>
-      <div class="card__desc">Zero-fee storage · Censorship-resistant payment gateway · Open telemetry · No rulers</div>
-    </div>
+    <!-- Anarchist Governance Banner -->
+    <section class="mb-6 max-w-3xl mx-auto">
+      <div class="card card-bordered border-primary bg-base-200 shadow-md">
+        <div class="card-body items-center text-center py-4">
+          <h2 class="card-title text-sm glitch">// ANARCHIST GOVERNANCE //</h2>
+          <p class="text-xs text-base-content/70 mt-1">
+            Zero-fee storage · Censorship-resistant payment gateway · Open telemetry · No rulers
+          </p>
+        </div>
+      </div>
+    </section>
 
     <!-- App Grid -->
-    <div class="grid">
-
-      <!-- App Card -->
-      <div class="card">
-        <div class="card__icon"><i class="fa-solid fa-coins text-warning"></i></div>
-        <div class="card__title">Uniswap DEX</div>
-        <div class="card__desc">Decentralized Exchange</div>
-        <div class="card__stats">
-          <span><i class="fa-solid fa-users text-success"></i> 45.2K</span>
-          <span><i class="fa-solid fa-star text-warning"></i> 4.9</span>
-        </div>
-        <button class="card__btn">Open App</button>
+    <section class="mb-6 max-w-5xl mx-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold glitch">// DECENTRALIZED APPS //</h2>
+        <a href="?all=true" class="btn btn-outline btn-xs">View All</a>
       </div>
 
-      <!-- App Card -->
-      <div class="card">
-        <div class="card__icon"><i class="fa-solid fa-image text-secondary"></i></div>
-        <div class="card__title">OpenSea</div>
-        <div class="card__desc">NFT Marketplace</div>
-        <div class="card__stats">
-          <span><i class="fa-solid fa-users text-success"></i> 28.7K</span>
-          <span><i class="fa-solid fa-star text-warning"></i> 4.7</span>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- App Card -->
+        <div class="card card-bordered border-primary bg-base-200 shadow-md">
+          <figure class="px-4 pt-4">
+            <div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-coins text-3xl text-warning"></i>
+            </div>
+          </figure>
+          <div class="card-body items-center text-center py-4">
+            <h3 class="card-title text-sm">Uniswap DEX</h3>
+            <p class="text-xs text-base-content/70">Decentralized Exchange</p>
+            <div class="flex items-center space-x-3 text-xs mt-2">
+              <span><i class="fa-solid fa-users text-success mr-1"></i>45.2K</span>
+              <span><i class="fa-solid fa-star text-warning mr-1"></i>4.9</span>
+            </div>
+            <div class="card-actions mt-3">
+              <button class="btn btn-primary btn-sm">Open App</button>
+            </div>
+          </div>
         </div>
-        <button class="card__btn">Open App</button>
-      </div>
 
-      <!-- App Card -->
-      <div class="card">
-        <div class="card__icon"><i class="fa-solid fa-vote-yea text-info"></i></div>
-        <div class="card__title">MakerDAO</div>
-        <div class="card__desc">Decentralized Governance</div>
-        <div class="card__stats">
-          <span><i class="fa-solid fa-users text-success"></i> 15.3K</span>
-          <span><i class="fa-solid fa-star text-warning"></i> 4.8</span>
+        <!-- App Card -->
+        <div class="card card-bordered border-primary bg-base-200 shadow-md">
+          <figure class="px-4 pt-4">
+            <div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-image text-3xl text-secondary"></i>
+            </div>
+          </figure>
+          <div class="card-body items-center text-center py-4">
+            <h3 class="card-title text-sm">OpenSea</h3>
+            <p class="text-xs text-base-content/70">NFT Marketplace</p>
+            <div class="flex items-center space-x-3 text-xs mt-2">
+              <span><i class="fa-solid fa-users text-success mr-1"></i>28.7K</span>
+              <span><i class="fa-solid fa-star text-warning mr-1"></i>4.7</span>
+            </div>
+            <div class="card-actions mt-3">
+              <button class="btn btn-primary btn-sm">Open App</button>
+            </div>
+          </div>
         </div>
-        <button class="card__btn">Open App</button>
-      </div>
 
-      <!-- App Card -->
-      <div class="card">
-        <div class="card__icon"><i class="fa-solid fa-lock text-error"></i></div>
-        <div class="card__title">Tornado Cash</div>
-        <div class="card__desc">Privacy Protocol</div>
-        <div class="card__stats">
-          <span><i class="fa-solid fa-users text-success"></i> 8.9K</span>
-          <span><i class="fa-solid fa-star text-warning"></i> 4.6</span>
+        <!-- App Card -->
+        <div class="card card-bordered border-primary bg-base-200 shadow-md">
+          <figure class="px-4 pt-4">
+            <div class="w-20 h-20 bg-base-300 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-vote-yea text-3xl text-info"></i>
+            </div>
+          </figure>
+          <div class="card-body items-center text-center py-4">
+            <h3 class="card-title text-sm">MakerDAO</h3>
+            <p class="text-xs text-base-content/70">Decentralized Governance</p>
+            <div class="flex items-center space-x-3 text-xs mt-2">
+              <span><i class="fa-solid fa-users text-success mr-1"></i>15.3K</span>
+              <span><i class="fa-solid fa-star text-warning mr-1"></i>4.8</span>
+            </div>
+            <div class="card-actions mt-3">
+              <button class="btn btn-primary btn-sm">Open App</button>
+            </div>
+          </div>
         </div>
-        <button class="card__btn">Open App</button>
       </div>
-
-    </div>
+    </section>
 
     <!-- Metrics -->
-    <div class="card" style="margin: 16px;">
-      <div class="card__title glitch">// ANARCHY METRICS //</div>
-      <div class="grid grid-cols-4 gap-4 mt-3 text-xs">
-        <div><div class="text-lg font-bold text-success">1,142</div><div class="opacity-70">PEERS</div></div>
-        <div><div class="text-lg font-bold text-warning">847</div><div class="opacity-70">APPS</div></div>
-        <div><div class="text-lg font-bold text-info">0.001%</div><div class="opacity-70">FEE</div></div>
-        <div><div class="text-lg font-bold text-secondary">100%</div><div class="opacity-70">UPTIME</div></div>
+    <section class="max-w-3xl mx-auto">
+      <div class="card card-bordered border-primary bg-base-200">
+        <div class="card-body">
+          <h3 class="card-title text-sm justify-center glitch">// ANARCHY METRICS //</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mt-4">
+            <div><div class="text-xl font-bold text-success">1,142</div><div class="text-xs text-base-content/70">PEERS</div></div>
+            <div><div class="text-xl font-bold text-warning">847</div><div class="text-xs text-base-content/70">APPS</div></div>
+            <div><div class="text-xl font-bold text-info">0.001%</div><div class="text-xs text-base-content/70">FEE</div></div>
+            <div><div class="text-xl font-bold text-secondary">100%</div><div class="text-xs text-base-content/70">UPTIME</div></div>
+          </div>
+        </div>
       </div>
-    </div>
-
+    </section>
   </main>
 
-  <!-- ===== BOTTOM NAV ===== -->
-  <nav class="bottom-nav">
-    <a href="#"><i class="fa-solid fa-store"></i>Apps</a>
-    <a href="#"><i class="fa-solid fa-search"></i>Find</a>
-    <a href="#"><i class="fa-solid fa-plus-circle"></i>Upload</a>
-    <a href="#"><i class="fa-solid fa-wallet"></i>Wallet</a>
-    <a href="#"><i class="fa-solid fa-cog"></i>Node</a>
-  </nav>
+  <!-- ========== BOTTOM NAV ========== -->
+  <footer class="sticky bottom-0 bg-[#111] border-t border-primary px-3 py-2">
+    <div class="max-w-5xl mx-auto grid grid-cols-5 gap-0 text-center text-xs">
+      <a href="?nav=apps" class="btn btn-ghost btn-xs rounded-none btn-nav">
+        <i class="fa-solid fa-store block mb-1 text-lg"></i>Apps
+      </a>
+      <a href="?nav=find" class="btn btn-ghost btn-xs rounded-none btn-nav">
+        <i class="fa-solid fa-search block mb-1 text-lg"></i>Find
+      </a>
+      <a href="?nav=upload" class="btn btn-ghost btn-xs rounded-none btn-nav">
+        <i class="fa-solid fa-plus-circle block mb-1 text-lg"></i>Upload
+      </a>
+      <a href="?nav=wallet" class="btn btn-ghost btn-xs rounded-none btn-nav">
+        <i class="fa-solid fa-wallet block mb-1 text-lg"></i>Wallet
+      </a>
+      <a href="?nav=node" class="btn btn-ghost btn-xs rounded-none btn-nav">
+        <i class="fa-solid fa-cog block mb-1 text-lg"></i>Node
+      </a>
+    </div>
+  </footer>
+
+  <!-- ========== THEME SWITCHER (graceful enhancement) ========== -->
+  <script>
+    const themeSelect = document.getElementById('themeSelect');
+    if (themeSelect) {
+      const saved = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+      themeSelect.value = saved;
+      themeSelect.addEventListener('change', e => {
+        const theme = e.target.value;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      });
+    }
+  </script>
 </body>
 </html>
