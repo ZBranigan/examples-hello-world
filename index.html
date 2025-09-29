@@ -11,18 +11,45 @@
 
   <!-- Gun.js P2P database -->
   <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<!-- 1.  Reown AppKit + Universal Provider  -->
+<script type="module">
+  import { createAppKit } from 'https://cdn.jsdelivr.net/npm/@reown/appkit@1.0.0/dist/appkit.js';
+  import { WagmiAdapter } from 'https://cdn.jsdelivr.net/npm/@reown/appkit-adapter-wagmi@1.0.0/dist/appkit-adapter-wagmi.js';
+  import { mainnet } from 'https://cdn.jsdelivr.net/npm/viem@2.9.0/chains';
 
-  <!-- WalletConnect web3modal -->
-  <script type="module">
-    import { EthereumProvider } from "https://unpkg.com/@walletconnect/ethereum-provider@2.11.0/dist/index.es.js";
-    window.wcProvider = await EthereumProvider.init({
-      projectId: "YOUR_WC_PROJECT_ID", // <-- free at cloud.walletconnect.com
-      chains: [1], // mainnet for registry
-      showQrModal: true
-    });
-  </script>
+  // 1-a.  Wagmi adapter (handles ethers/viem transparently)
+  const wagmiAdapter = new WagmiAdapter({
+    chains: [mainnet],
+    projectId: 'YOUR_WC_PROJECT_ID', // ← same free ID from cloud.walletconnect.com
+  });
 
-  <!-- IPFS via web3.storage (client-side) -->
+  // 1-b.  Create the modal
+  const modal = createAppKit({
+    adapters: [wagmiAdapter],
+    chains: [mainnet],
+    projectId: 'YOUR_WC_PROJECT_ID',
+    // optional theming
+    themeMode: 'dark',
+    themeVariables: {
+      '--w3m-color-mix': '#00ffaa',
+      '--w3m-color-mix-strength': 30
+    }
+  });
+
+  // 1-c.  Export a minimal ethers signer-like object so the rest of the
+  //       prototype still works without changes.
+  window.wcProvider = {
+    async connect() {
+      await modal.open();
+      return modal.getWalletProvider(); // EIP-1193 provider
+    },
+    async request({ method, params }) {
+      const provider = modal.getWalletProvider();
+      return provider.request({ method, params });
+    }
+  };
+</script>
+  <!-- t we IPFS via web3.storage (client-side) -->
   <script src="https://unpkg.com/web3.storage@4.5.5/dist/bundle.esm.min.js" type="module"></script>
 </head>
 
